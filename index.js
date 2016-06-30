@@ -1,6 +1,6 @@
 'use strict'
 global.Promise = require('bluebird')
-global.ROOT = __dirname;
+global.ROOT = __dirname
 
 const http = require('http')
 const express = require('express')
@@ -16,7 +16,6 @@ const webpackHotMiddleware = require('webpack-hot-middleware')
 const env = process.env.NODE_ENV || 'development'
 const port = process.env.PORT || 3000
 
-// 创建 app
 const app = express()
 app.locals.ENV = env
 app.locals.ENV_DEVELOPMENT = (env === 'development')
@@ -43,5 +42,5 @@ app.use((err, req, res, next) => {
 const server = http.createServer(app);
 
 server.listen(port, () => {
-  console.log(`Listen on port ${server.address().port}`);
+  console.log(`==> Listen on port ${server.address().port}`);
 });

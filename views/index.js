@@ -2,9 +2,9 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
+import { Provider, connect } from 'react-redux'
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
-import { ReduxAsyncConnect } from 'redux-connect'
+import { asyncConnect, ReduxAsyncConnect } from 'redux-connect'
 import { syncHistoryWithStore } from 'react-router-redux'
 
 import store from './redux/store'

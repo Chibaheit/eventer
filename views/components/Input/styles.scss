@@ -1,0 +1,48 @@
+.input {
+  background-color: rgba(33, 33, 33, 0.4);
+  padding: 10px 10px;
+  border-bottom: solid rgba(33, 33, 33, 0.5) 1px;
+  border-left: solid rgba(33, 33, 33, 0.5) 1px;
+  border-right: solid rgba(33, 33, 33, 0.5) 1px;
+  border-top: none;
+  color: rgba(255, 255, 255, 0.8);
+  appearance: none;
+  outline: none;
+  &::placeholder {
+    margin-left: 2em;
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.wrapper {
+  width: 100%;
+  position: relative;
+  display: flex;
+  & > input {
+    min-width: 100px;
+    flex: 1;
+    font: 16px/1.4 "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, sans-serif;
+  }
+  .error {
+    padding: 8px 0px;
+    position: absolute;
+    font: 16px/1.4 "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, sans-serif;
+    top: 0;
+    right: 8px;
+    color: rgba(255, 98, 0, 0.95);
+    opacity: 0.5;
+    animation: error-fade-in .5s 1;
+  }
+  &:first-child > input {
+    border-top: solid rgba(36, 33, 33, 0.5) 1px;
+  }
+}
+
+@keyframes error-fade-in {
+  0% {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.5;
+  }
+}

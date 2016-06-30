@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import { browserHistory } from 'react-router'
 import { routerMiddleware } from 'react-router-redux'
+import _ from 'lodash'
 
 import reducer from './modules/reducer'
 import ajax from '../base/ajax'
@@ -18,7 +19,7 @@ function ajaxMiddleware(client) {
     next({ ...rest, type: REQUEST })
     const actionPromise = promise(client)
     actionPromise.then(
-      result => next({ ...rest, result, type: SUCCESS}),
+      result => next({ ...rest, result, type: SUCCESS }),
       error => next({ ...rest, error, type: FAILURE })
     ).catch(error => {
       console.error('MIDDLEWARE ERROR:', error)
@@ -28,14 +29,14 @@ function ajaxMiddleware(client) {
   }
 }
 
-const _ajaxMiddleware = ajaxMiddleware(ajax)
 const _routerMiddleware = routerMiddleware(browserHistory)
+const _ajaxMiddleware = ajaxMiddleware(ajax)
 
 const store = createStore(
   reducer, compose(
-    applyMiddleware(_ajaxMiddleware, _routerMiddleware),
+    applyMiddleware(_routerMiddleware, _ajaxMiddleware),
     process.env.NODE_ENV === 'development' && window.devToolsExtension ?
-    window.devToolsExtension() : f => f
+      window.devToolsExtension() : f => f
   )
 )
 
