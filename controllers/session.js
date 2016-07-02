@@ -25,7 +25,7 @@ router.post('/session', (req, res, next) => {
     })(req, res, next);
 });
 
-router.delete('/session', (req, res, next) => {
+router.delete('/session', (req, res) => {
     req.logout();
     return res.sendStatus(204);
 });
