@@ -53,11 +53,21 @@ UserSchema.path('username').validate(function (username, respond) {
     if (this.isNew || this.isModified('username')) {
         // Check only when it is a new userId or when username field is modified
         const User = mongoose.model('User');
-        User.find({ username: username }).exec((err, users) => respond(!err && users.length === 0));
+        User.find({ username }).exec((err, users) => respond(!err && users.length === 0));
     } else {
         return respond(true);
     }
 }, '用户名已存在');
+
+UserSchema.path('email').validate(function (username, respond) {
+    if (this.isNew || this.isModified('email')) {
+        // Check only when it is a new userId or when email field is modified
+        const User = mongoose.model('User');
+        User.find({ email }).exec((err, users) => respond(!err && users.length === 0));
+    } else {
+        return respond(true);
+    }
+}, '邮箱已存在');
 
 UserSchema.pre('save', function (next) {
     if (!this.isNew) {
