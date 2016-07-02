@@ -8,6 +8,7 @@ const fs = require("fs");
 const http = require('http');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+const mongooseTypes = require('mongoose-types');
 const passport = require('passport');
 const PassportLocalStrategy = require('passport-local').Strategy;
 const path = require("path");
@@ -32,6 +33,7 @@ mongoose.connect(config.db, {
         }
     }
 });
+mongooseTypes.loadTypes(mongoose);
 const modelsPath = path.join(ROOT, 'models');
 fs.readdirSync(modelsPath).forEach(file => require(path.join(modelsPath, file)));
 
@@ -40,8 +42,14 @@ fs.readdirSync(modelsPath).forEach(file => require(path.join(modelsPath, file)))
 passport.serializeUser((user, done) => done(null, user.id));
 const User = mongoose.model('User');
 passport.deserializeUser((id, done) => User.findById(id, done));
-passport.use(new PassportLocalStrategy(function (username, password, done) {
-    User.findOne({ username }).select('+passwordSalt +passwordHash').exec((err, user) => {
+passport.use(new PassportLocalStrategy(function (usernameOrEmail, password, done) {
+    User.findOne({
+        $or: [{
+            username: usernameOrEmail
+        }, {
+            email: usernameOrEmail
+        }]
+    }).select('+passwordSalt +passwordHash').exec((err, user) => {
         if (err) {
             return done(err);
         } else if (!user) {

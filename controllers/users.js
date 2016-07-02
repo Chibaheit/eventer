@@ -19,6 +19,10 @@ router.get('/users', (req, res, next) => {
                 $regex: regex
             }
         }, {
+            email: {
+                $regex: regex
+            }
+        }, {
             nickname: {
                 $regex: regex
             }

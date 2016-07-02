@@ -11,6 +11,10 @@ const UserSchema = new Schema({
         required: true,
         match: /^[0-9A-Za-z]{1,16}$/
     },
+    email: {
+        type: mongoose.SchemaTypes.Email,
+        required: true
+    },
     passwordSalt: {
         type: String,
         required: true,
