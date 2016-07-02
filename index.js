@@ -19,6 +19,7 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const MongoStore = require('connect-mongo')(session);
 
 const config = require('./config');
+const router = require('./controllers');
 
 const env = process.env.NODE_ENV || 'development';
 const port = process.env.PORT || 3000;
@@ -76,6 +77,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(router);
+
 app.use(express.static(`${ROOT}/public`));
 if (env === 'development') {
     const compiler = webpack(require('./webpack.config.dev'));
@@ -88,9 +91,14 @@ if (env === 'development') {
     app.use(webpackHotMiddleware(compiler));
 }
 
+app.use((req, res, next) => {
+    const err = new Error('未找到资源');
+    err.status = 404;
+    next(err);
+});
 app.use((err, req, res, next) => {
     console.error(err);
-    res.status(err.status || 500).send(err.stack);
+    res.status(err.status || 500).send(err);
 });
 
 // Http
