@@ -1,6 +1,5 @@
 'use strict';
 
-global.Promise = require('bluebird');
 global.ROOT = __dirname;
 
 const http = require('http');
