@@ -36,7 +36,7 @@ router.get('/users', (req, res, next) => {
         .catch(next);
 });
 
-router.post('/users', (req, res, next) => {
+router.post('/users', (req, res) => {
     new User(req.body).save()
         .then(user => req.login(user, err => {
             if (err) {
@@ -44,8 +44,7 @@ router.post('/users', (req, res, next) => {
             }
             return res.status(204);
         }))
-        .catch(err => res.status(400).json(err))
-        .catch(next);
+        .catch(err => res.status(400).json(err));
 });
 
 router.get('/users/:username', (req, res, next) => {
