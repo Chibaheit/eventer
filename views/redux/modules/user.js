@@ -34,17 +34,17 @@ export const showLogin = () => ({
 
 export const signup = data => ({
   types: [SIGNUP, SIGNUP_SUCCESS, SIGNUP_FAIL],
-  promise: _ => _.post('/api/user/signup', data)
+  promise: _ => _.post('/api/user', data)
 })
 
 export const login = data => ({
   types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
-  promise: _ => _.post('/api/user/login', data)
+  promise: _ => _.post('/api/session', data)
 })
 
 export const getProfile = () => ({
   types: [GET_PROFILE, GET_PROFILE_SUCCESS, GET_PROFILE_FAIL],
-  promise: _ => _.get('/api/user')
+  promise: _ => _.get('/api/profile')
 })
 
 export const addFriend = data => ({

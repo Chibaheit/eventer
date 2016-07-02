@@ -32,6 +32,17 @@ router.get('/users', (req, res, next) => {
         .catch(next);
 });
 
+router.post('/users', (req, res, next) => {
+    new User(req.body).save()
+        .then(user => req.login(user, err => {
+            if (err) {
+                return next(err);
+            }
+            return res.status(204);
+        }))
+        .catch(next);
+});
+
 router.get('/users/:username', (req, res, next) => {
     User.findOne({ username: req.params.username })
         .then(user => {

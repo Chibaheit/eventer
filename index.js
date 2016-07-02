@@ -19,7 +19,6 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const MongoStore = require('connect-mongo')(session);
 
 const config = require('./config');
-const router = require('./controllers');
 
 const env = process.env.NODE_ENV || 'development';
 const port = process.env.PORT || 3000;
@@ -77,7 +76,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(router);
+app.use(require('./controllers'));
 
 app.use(express.static(`${ROOT}/public`));
 if (env === 'development') {
