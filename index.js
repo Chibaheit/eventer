@@ -2,16 +2,59 @@
 
 global.ROOT = __dirname;
 
-const http = require('http');
 const bodyParser = require('body-parser');
 const express = require('express');
+const fs = require("fs");
+const http = require('http');
 const logger = require('morgan');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const PassportLocalStrategy = require('passport-local').Strategy;
+const path = require("path");
+const session = require('express-session');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 
+const MongoStore = require('connect-mongo')(session);
+
+const config = require('./config');
+
 const env = process.env.NODE_ENV || 'development';
 const port = process.env.PORT || 3000;
+
+// Mongoose
+
+mongoose.connect(config.db, {
+    server: {
+        socketOptions: {
+            keepAlive: 1
+        }
+    }
+});
+const modelsPath = path.join(ROOT, 'models');
+fs.readdirSync(modelsPath).forEach(file => require(path.join(modelsPath, file)));
+
+// Passport
+
+passport.serializeUser((user, done) => done(null, user.id));
+const User = mongoose.model('User');
+passport.deserializeUser((id, done) => User.findById(id, done));
+passport.use(new PassportLocalStrategy(function (username, password, done) {
+    User.findOne({ username }).select('+passwordSalt +passwordHash').exec((err, user) => {
+        if (err) {
+            return done(err);
+        } else if (!user) {
+            return done(null, false, { message: '账户不存在' });
+        } else if (!user.authenticate(password)) {
+            return done(null, false, { message: '密码错误' });
+        } else {
+            return done(null, user);
+        }
+    });
+}));
+
+// Express
 
 const app = express();
 
@@ -21,6 +64,17 @@ app.locals.ENV_DEVELOPMENT = (env === 'development');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: config.secret,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection
+    })
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.static(`${ROOT}/public`));
 if (env === 'development') {
@@ -34,10 +88,12 @@ if (env === 'development') {
     app.use(webpackHotMiddleware(compiler));
 }
 
-app.use((err, req, res) => {
-    res.status(500).send(err.stack);
+app.use((err, req, res, next) => {
     console.error(err);
+    res.status(err.status || 500).send(err.stack);
 });
+
+// Http
 
 const server = http.createServer(app);
 
