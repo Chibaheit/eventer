@@ -59,7 +59,7 @@ UserSchema.path('username').validate(function (username, respond) {
     }
 }, '用户名已存在');
 
-UserSchema.path('email').validate(function (username, respond) {
+UserSchema.path('email').validate(function (email, respond) {
     if (this.isNew || this.isModified('email')) {
         // Check only when it is a new userId or when email field is modified
         const User = mongoose.model('User');

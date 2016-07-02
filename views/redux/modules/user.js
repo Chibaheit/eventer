@@ -34,7 +34,7 @@ export const showLogin = () => ({
 
 export const signup = data => ({
   types: [SIGNUP, SIGNUP_SUCCESS, SIGNUP_FAIL],
-  promise: _ => _.post('/api/user', data)
+  promise: _ => _.post('/api/users', data)
 })
 
 export const login = data => ({

@@ -26,6 +26,8 @@ const port = process.env.PORT || 3000;
 
 // Mongoose
 
+mongoose.Promise = Promise;
+mongooseTypes.loadTypes(mongoose);
 mongoose.connect(config.db, {
     server: {
         socketOptions: {
@@ -33,7 +35,6 @@ mongoose.connect(config.db, {
         }
     }
 });
-mongooseTypes.loadTypes(mongoose);
 const modelsPath = path.join(ROOT, 'models');
 fs.readdirSync(modelsPath).forEach(file => require(path.join(modelsPath, file)));
 

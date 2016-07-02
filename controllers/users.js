@@ -44,6 +44,7 @@ router.post('/users', (req, res, next) => {
             }
             return res.status(204);
         }))
+        .catch(err => res.status(400).json(err))
         .catch(next);
 });
 
