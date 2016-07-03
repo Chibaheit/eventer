@@ -1,116 +1,153 @@
 'use strict';
-
+// 使用 Bluebird Promise 库
+global.Promise = require('bluebird');
 global.ROOT = __dirname;
 
-const bodyParser = require('body-parser');
-const express = require('express');
-const fs = require("fs");
+const glob = require('glob');
 const http = require('http');
-const logger = require('morgan');
-const mongoose = require('mongoose');
-const mongooseTypes = require('mongoose-types');
-const passport = require('passport');
-const PassportLocalStrategy = require('passport-local').Strategy;
-const path = require("path");
+// Express 服务器框架
+const express = require('express');
+// 解析 body
+const bodyParser = require('body-parser');
+// 解析 cookie
+const cookieParser = require('cookie-parser');
+// 连接 session
 const session = require('express-session');
+// 打印连接日志
+const logger = require('morgan');
+// 图标
+const favicon = require('serve-favicon');
+// 使用 Redis 提供 Session 存储
+const ConnectRedis = require('connect-redis');
+
+
+// webpack 构建
 const webpack = require('webpack');
+// webpack 实时编译
 const webpackDevMiddleware = require('webpack-dev-middleware');
+// webpack 热模块替换
 const webpackHotMiddleware = require('webpack-hot-middleware');
 
-const MongoStore = require('connect-mongo')(session);
-
-const config = require('./config');
-
 const env = process.env.NODE_ENV || 'development';
+global.isProduction = (env === 'production');
 const port = process.env.PORT || 3000;
+const RedisStore = ConnectRedis(session);
+const config = require('./config');
+const socketIOSession = require('socket.io.session');
+const sessionStore = new RedisStore(config.redis);
 
-// Mongoose
+const sessionSettings = {
+  name: 'blipay.sid',
+  secret: config.cookie.secret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false },
+  store: sessionStore
+};
 
-mongoose.Promise = Promise;
-mongooseTypes.loadTypes(mongoose);
-mongoose.connect(config.db, {
-    server: {
-        socketOptions: {
-            keepAlive: 1
-        }
-    }
-});
-const modelsPath = path.join(ROOT, 'models');
-fs.readdirSync(modelsPath).forEach(file => require(path.join(modelsPath, file)));
-
-// Passport
-
-passport.serializeUser((user, done) => done(null, user.id));
-const User = mongoose.model('User');
-passport.deserializeUser((id, done) => User.findById(id, done));
-passport.use(new PassportLocalStrategy(function (usernameOrEmail, password, done) {
-    User.findOne({
-        $or: [{
-            username: usernameOrEmail
-        }, {
-            email: usernameOrEmail
-        }]
-    }).select('+passwordSalt +passwordHash').exec((err, user) => {
-        if (err) {
-            return done(err);
-        } else if (!user) {
-            return done(null, false, { message: '账户不存在' });
-        } else if (!user.authenticate(password)) {
-            return done(null, false, { message: '密码错误' });
-        } else {
-            return done(null, user);
-        }
-    });
-}));
-
-// Express
-
+// 创建 app
 const app = express();
-
 app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = (env === 'development');
 
+// 注册各种中间件
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser(config.cookie.secret));
+app.use(session(sessionSettings));
+app.use(favicon(`${ROOT}/public/favicon.ico`));
 
-app.use(session({
-    resave: false,
-    saveUninitialized: false,
-    secret: config.secret,
-    store: new MongoStore({
-        mongooseConnection: mongoose.connection
-    })
-}));
-app.use(passport.initialize());
-app.use(passport.session());
+/* 静态资源 */
+if (env === 'development') {
+  const compiler = webpack(require('./webpack.config.dev'));
+  app.use(webpackDevMiddleware(compiler, {
+    noInfo: true,
+    stats: { colors: true }
+  }));
+  app.use(webpackHotMiddleware(compiler));
+}
+
+app.use(express.static(`${ROOT}/public`));
+// 提供快捷的 res.success / res.fail
+app.use((req, res, next) => {
+  res.success = function (data) {
+    return this.json({
+      code: 0,
+      data: data
+    });
+  };
+  res.fail = function (data) {
+    return this.json({
+      code: -1,
+      error: data
+    });
+  };
+  next();
+});
+
+// models
+require('./models');
 
 app.use(require('./controllers'));
 
-app.use(express.static(`${ROOT}/public`));
-if (env === 'development') {
-    const compiler = webpack(require('./webpack.config.dev'));
-    app.use(webpackDevMiddleware(compiler, {
-        noInfo: true,
-        stats: {
-            colors: true
-        }
-    }));
-    app.use(webpackHotMiddleware(compiler));
-}
-
-app.use((req, res, next) => {
-    const err = new Error('未找到资源');
-    err.status = 404;
-    next(err);
-});
+// 错误处理
 app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(err.status || 500).send(err);
+  res.status(500).send(err.stack);
+  console.error(err);
 });
-
-// Http
 
 const server = http.createServer(app);
 
-server.listen(port, () => console.log(`==> Listening on port ${server.address().port}`));
+// 开始监听
+server.listen(port, () => {
+  console.log(`App is listening on port ${server.address().port}`);
+});
+
+// Chat
+
+// Socket.io
+const io = require('socket.io')(server);
+
+const socketSession = socketIOSession(sessionSettings);
+
+
+io.use(socketSession.parser);
+const users = [];
+const sockets = [];
+
+io.on('connection', function (socket) {
+  console.log('connected!');
+  if (!socket.session.userId)
+    return;
+  let userId = socket.session.userId;
+  let userName = socket.session.userName;
+  // Welcome message on connection
+  socket.emit('connected', 'Welcome to the chat server ' + userName);
+
+  users[userId] = { userId: userId, userName: userName };
+  sockets[userId] = socket;
+  console.log('User in: ' + userId + ' ' + userName);
+  socket.broadcast.emit('userList', { users: users });
+
+  socket.on('reqUserList', () => {
+    socket.emit('userList', { users: users });
+  });
+
+  socket.on('send', (data) => {
+    console.log('send', data);
+    const dstSocket = sockets[data.userId];
+    if (dstSocket) {
+      dstSocket.emit('msg', { from: userId, text: data.text });
+    }
+    else {
+      // TODO
+    }
+  });
+
+  // Clean up on disconnect
+  socket.on('disconnect', () => {
+    socket.broadcast.emit('userOut', { userId: userId });
+    delete users[userId];
+  });
+});

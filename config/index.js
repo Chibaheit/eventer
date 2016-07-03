@@ -1,6 +1,7 @@
-'use strict';
+const development = require('./development');
+const production = require('./production');
 
 module.exports = {
-    db: 'mongodb://localhost/eventer',
-    secret: 'eventer'
-};
+  development: development,
+  production: production
+}[process.env.NODE_ENV || 'development'];

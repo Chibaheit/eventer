@@ -1,109 +1,78 @@
-'use strict';
+/*
+ * 用于存放用户信息的数据表
+ */
+const Sequelize = require('sequelize');
 
-const crypto = require('crypto');
-const mongoose = require('mongoose');
-
-const Schema = mongoose.Schema;
-
-const UserSchema = new Schema({
-    username: {
-        type: String,
-        required: true,
-        match: /^[0-9A-Za-z]{1,16}$/
+module.exports = (db) => {
+  return db.define('user', {
+    /* 用户名 */
+    userName: {
+      type: Sequelize.STRING,
+      unique: true,
+      allowNull: false
     },
+    /* 密码盐 */
+    salt: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+    /* 登录密码 */
+    loginPass: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+    /* 支付密码 */
+    payPass: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+    /* 真实姓名 */
+    realName: {
+      type: Sequelize.STRING
+    },
+    /* 身份证号 */
+    idNumber: {
+      type: Sequelize.STRING,
+      unique: true
+    },
+    /* 邮箱地址 */
     email: {
-        type: mongoose.SchemaTypes.Email,
-        required: true
+      type: Sequelize.STRING
     },
-    passwordSalt: {
-        type: String,
-        required: true,
-        select: false
+    /* 电话号码 */
+    phone: {
+      type: Sequelize.STRING
     },
-    passwordHash: {
-        type: String,
-        required: true,
-        select: false
+    /* 上次登录时间 */
+    lastLogin: {
+      type: Sequelize.DATE
     },
-    avatar: {
-        type: String,
-        required: true,
-        default: '/images/default-avatar.svg'
+    /* 账户余额 */
+    balance: {
+      type: Sequelize.DECIMAL(12, 2),
+      defaultValue: 0
     },
-    nickname: {
-        type: String,
-        required: true,
-        minlength: 1,
-        maxlength: 16
+    disabled: {
+      type: Sequelize.INTEGER,
+      defaultValue: 0
     },
-    signature: String
-});
-
-UserSchema.virtual('password')
-    .set(function (password) {
-        this._password = password;
-        this.passwordSalt = this.makeSalt();
-        this.passwordHash = this.encryptPassword(password);
-    })
-    .get(function () {
-        return this._password;
-    });
-
-UserSchema.path('username').validate(function (username, respond) {
-    if (this.isNew || this.isModified('username')) {
-        // Check only when it is a new userId or when username field is modified
-        const User = mongoose.model('User');
-        User.find({ username }).exec((err, users) => respond(!err && users.length === 0));
-    } else {
-        return respond(true);
+    /* 实名验证状态, 0为未验证，1为审核中，2为通过验证 */
+    status: {
+      type: Sequelize.INTEGER,
+      defaultValue: 0
+    },
+    cardFront: {
+      type: Sequelize.INTEGER
+    },
+    cardBack: {
+      type: Sequelize.INTEGER
+    },
+    booker: {
+      type: Sequelize.INTEGER,
+      defaultValue: 0
+    },
+    address: {
+      type: Sequelize.STRING
     }
-}, '用户名已存在');
-
-UserSchema.path('email').validate(function (email, respond) {
-    if (this.isNew || this.isModified('email')) {
-        // Check only when it is a new userId or when email field is modified
-        const User = mongoose.model('User');
-        User.find({ email }).exec((err, users) => respond(!err && users.length === 0));
-    } else {
-        return respond(true);
-    }
-}, '邮箱已存在');
-
-UserSchema.pre('save', function (next) {
-    if (!this.isNew) {
-        return next();
-    } else if (!(this.password && this.password.length)) {
-        return next(new Error('密码无效'));
-    } else if (this.password.length < 6) {
-        return next(new Error('密码长度小于 6'));
-    } else {
-        return next();
-    }
-});
-
-UserSchema.methods = {
-
-    authenticate(password) {
-        return this.encryptPassword(password) === this.passwordHash;
-    },
-
-    makeSalt() {
-        return Math.round((new Date().valueOf() * Math.random())) + '';
-    },
-
-    encryptPassword(password) {
-        if (!password) {
-            return '';
-        }
-        try {
-            return crypto
-                .createHmac('sha1', this.passwordSalt)
-                .update(password)
-                .digest('hex');
-        } catch (err) {
-            return '';
-        }
-    }
+  });
 };
-
-mongoose.model('User', UserSchema);

@@ -1,8 +1,8 @@
 .wrapper {
-  width: 90%;
-  height: 100%;
-  margin: 0px auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-color: #529ecc;
+  .container {
+    position: relative;
+    height: 100%;
+    vertical-align: middle;
+  }
 }

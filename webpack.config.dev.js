@@ -1,12 +1,4 @@
-const webpack = require('webpack')
-
-let plugins = [
-  new webpack.DefinePlugin({
-    'process.env.NODE_ENV': '"development"'
-  }),
-  new webpack.HotModuleReplacementPlugin(),
-  new webpack.NoErrorsPlugin()
-]
+const webpack = require('webpack');
 
 module.exports = {
   devtool: 'source-map',
@@ -14,7 +6,6 @@ module.exports = {
   entry: {
     main: [
       'webpack-hot-middleware/client',
-      'babel-polyfill',
       './index.js'
     ]
   },
@@ -23,25 +14,35 @@ module.exports = {
     publicPath: '/',
     filename: '[name].bundle.js'
   },
-  plugins: plugins,
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"development"'
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin()
+  ],
   module: {
     loaders: [
       {
-        test: /\.js?$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        loader: 'babel',
         query: {
           presets: ['es2015', 'stage-0', 'react', 'react-hmre'],
           plugins: ['transform-decorators-legacy', 'antd']
         }
       }, {
         test: /\.scss$/,
-        loaders: [
-          'style',
-          'css?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]',
-          'postcss?sourceMap',
-          'sass?sourceMap'
-        ]
+        exclude: /node_modules/,
+        loaders: ['style',
+                  /* eslint-disable */
+                  'css?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]',
+                  /* eslint-enable */
+                  'postcss?sourceMap',
+                  'sass?sourceMap']
+      }, {
+        test: /\.css$/,
+        loaders: ['style', 'css']
       }, {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
         loaders: ['url?limit=10000']
@@ -52,9 +53,9 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.scss']
+    extensions: ['', '.js', '.jsx', '.json', '.scss']
   },
   postcss: [
     require('autoprefixer')({ browsers: ['last 3 versions'] })
   ]
-}
+};

@@ -1,7 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import { browserHistory } from 'react-router'
 import { routerMiddleware } from 'react-router-redux'
-import _ from 'lodash'
 
 import reducer from './modules/reducer'
 import ajax from '../base/ajax'
@@ -29,14 +28,14 @@ function ajaxMiddleware(client) {
   }
 }
 
-const _routerMiddleware = routerMiddleware(browserHistory)
 const _ajaxMiddleware = ajaxMiddleware(ajax)
+const _routerMiddleware = routerMiddleware(browserHistory)
 
 const store = createStore(
   reducer, compose(
-    applyMiddleware(_routerMiddleware, _ajaxMiddleware),
+    applyMiddleware(_ajaxMiddleware, _routerMiddleware),
     process.env.NODE_ENV === 'development' && window.devToolsExtension ?
-      window.devToolsExtension() : f => f
+    window.devToolsExtension() : f => f
   )
 )
 

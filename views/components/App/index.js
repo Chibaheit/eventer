@@ -1,23 +1,28 @@
-import React from 'react'
-import { asyncConnect } from 'redux-connect'
+/*
+ * 所有主站页面基准模板
+ */
+import React from 'react';
+import { asyncConnect } from 'redux-connect';
 
-import { getProfile } from '../../redux/modules/user'
+import NavBar from '../NavBar';
+import { loadAccountInfo } from '../../redux/modules/account';
 
-import './styles'
+import './styles';
 
 @asyncConnect([{
-  promise: ({ store: { dispatch, getState } }) => {
-    dispatch(getProfile())
+  promise: ({ store: { dispatch, getState }}) => {
+    return dispatch(loadAccountInfo())
   }
 }])
 class App extends React.Component {
   render() {
     return (
       <div>
+        <NavBar />
         { this.props.children }
       </div>
-    )
+    );
   }
 }
 
-export default App
+export default App;
