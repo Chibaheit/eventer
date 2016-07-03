@@ -2,7 +2,7 @@ import React from 'react'
 import { reduxForm } from 'redux-form'
 import { Form, Input, Icon, Button } from 'antd'
 import { connect } from 'react-redux'
-import { register } from '../../redux/modules/account'
+import { login } from '../../redux/modules/account'
 import store from '../../redux/store'
 import ajax from '../../base/ajax'
 import styles from './styles'
@@ -26,7 +26,7 @@ const validate = values => {
   fields: ['email', 'password'],
   validate
 }, undefined, {
-  onSubmit: data => register(data)
+  onSubmit: data => login(data)
 })
 class RegisterForm extends React.Component {
   render() {
@@ -67,7 +67,7 @@ class RegisterForm extends React.Component {
         <Button type="primary" size="large"
                 className={styles.btn}
                 htmlType="submit">
-          注册
+          登入
         </Button>
         <div className={styles.bottomRight}>
           <a onClick={this.props.handleSwitchPanel.bind(this, 1)}>

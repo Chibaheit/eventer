@@ -56,24 +56,24 @@ router.post('/account/register', async (req, res) => {
  * User login
  * @method POST
  * @uri /api/user/login
- * @body { username, password }
+ * @body { email, password }
  */
 router.post('/account/login', async (req, res) => {
-  if (typeof req.body.username !== 'string' ||
+  if (typeof req.body.email !== 'string' ||
       typeof req.body.password !== 'string') {
     return res.bad()
   }
   // Find user
   const user = await User.findOne({
     $or: [
-      { username: _.toLower(req.body.username) },
-      { email: _.toLower(req.body.username) }
+      { username: _.toLower(req.body.email) },
+      { email: _.toLower(req.body.email) }
     ]
   }).select('name password').exec()
-  // Check if username and password are matched
+  // Check if email and password are matched
   const errors = {}
   if (!user) {
-    errors.username = '用户不存在'
+    errors.email = '用户不存在'
   } else if (user.password !== sha256x2(req.body.password)) {
     errors.password = '错误的密码'
   }
@@ -91,9 +91,9 @@ router.post('/account/login', async (req, res) => {
 /***
  * User basic information
  * @method GET
- * @uri /api/user
+ * @uri /api/user/info
  */
-router.get('/account', async (req, res) => {
+router.get('/account/info', async (req, res) => {
   if (req.session.user) {
     const user = await User.findById(req.session.user._id)
         .select('username name friends')
