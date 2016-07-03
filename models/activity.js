@@ -11,22 +11,22 @@ const activitySchema = new Schema({
         type: String
     },
     startTime : {
-        type: Data
+        type: Date
     },
     endTime : {
-        type: Data
+        type: Date
     },
     creator : {
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
         ref: 'User'
     },
     participator : [{
         user : {
-            type: Schema.Types.ObjectId
+            type: Schema.Types.ObjectId,
             ref: 'User'
         },
         time : {
-            type: Data
+            type: Date
         }
     }]
 })

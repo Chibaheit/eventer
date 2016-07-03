@@ -25,10 +25,14 @@ const initialState = {
   user: null
 }
 
+export const registerOrganization = data => ({
+  types: [REGISTERORGANIZATION, REGISTERORGANIZATION_SUCCESS, REGISTERORGANIZATION_FAIL],
+  promise: client => client.post('/api/account/register/organization')
+})
 
 export const register = data => ({
   types: [REGISTER, REGISTER_SUCCESS, REGISTER_FAIL],
-  promise: client => client.post('/api/account/register', data)
+  promise: client => client.post('/api/account/register/normal', data)
 })
 
 export const login = (data) => ({

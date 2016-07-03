@@ -9,10 +9,10 @@ const router = Router()
 /***
  * User registration
  * @method POST
- * @uri /api/user/register
+ * @uri /api/account/register
  * @body { username, password, email }
  */
-router.post('/account/register', async (req, res) => {
+router.post('/account/register/:role', async (req, res) => {
   // Recheck format
   let errors
   // Check unique
@@ -39,15 +39,18 @@ router.post('/account/register', async (req, res) => {
   const user = new User({
     username: _.toLower(req.body.username),
     password: sha256x2(req.body.password),
-    name: req.body.username,
+    nickname: req.body.username,
     email: _.toLower(req.body.email),
-    friends: [] // No friends initally
+    activities: [],
+    followings: [],
+    isOrganization: req.params.role === 'organization'
   })
   await user.save()
   // Update session
   req.session.user = {
     _id: user._id,
-    name: user.name
+    nickname: user.nickname,
+    isOrganization : user.isOrganization
   }
   return res.success()
 })
@@ -55,7 +58,7 @@ router.post('/account/register', async (req, res) => {
 /***
  * User login
  * @method POST
- * @uri /api/user/login
+ * @uri /api/account/login
  * @body { email, password }
  */
 router.post('/account/login', async (req, res) => {
@@ -83,7 +86,8 @@ router.post('/account/login', async (req, res) => {
   // Update session
   req.session.user = {
     _id: user._id,
-    name: user.name
+    nickname: user.nickname,
+    isOrganization : user.isOrganization
   }
   return res.success()
 })
@@ -91,13 +95,13 @@ router.post('/account/login', async (req, res) => {
 /***
  * User basic information
  * @method GET
- * @uri /api/user/info
+ * @uri /api/account/info
  */
 router.get('/account/info', async (req, res) => {
   if (req.session.user) {
     const user = await User.findById(req.session.user._id)
-        .select('username name friends')
-        .populate('friends', 'name').exec()
+        .select('username nickname followings')
+        .populate('followings', 'nickname').exec()
     return res.success({ user })
   } else {
     return res.fail()
@@ -107,7 +111,7 @@ router.get('/account/info', async (req, res) => {
 /***
  * User search
  * @method GET
- * @uri /api/user/search
+ * @uri /api/account/search
  */
 router.get('/account/search', async (req, res) => {
   if (!req.session.user) {
@@ -117,7 +121,7 @@ router.get('/account/search', async (req, res) => {
     return res.bad()
   }
   const users = await User.find({ username: new RegExp(req.query.q, 'i') })
-      .select('username name').exec()
+      .select('username nickname').exec()
   return res.success({ users })
 })
 

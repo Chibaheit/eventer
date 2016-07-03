@@ -12,10 +12,21 @@ const userSchema = new Schema({
   nickname: {
     type: String
   },
+  phone: {
+    type: String,
+    default : ''
+  },
+  avator: {
+    type: String
+    default : ''
+  },
   email: {
     type: String,
     index: true,
     unique: true
+  },
+  isOrganization: {
+    type: Boolean
   },
   activities : [{
       activity : {
@@ -32,7 +43,7 @@ const userSchema = new Schema({
           type: Schema.Types.ObjectId,
           ref: 'User'
       }
-  }]
+  }],
   lastVisited: {
     type: Date,
     default: Date.now()
