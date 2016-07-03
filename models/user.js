@@ -12,6 +12,9 @@ const userSchema = new Schema({
   nickname: {
     type: String
   },
+  signature: {
+    type: String
+  },
   phone: {
     type: String,
     default : ''

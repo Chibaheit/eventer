@@ -15,7 +15,7 @@ const validateEmail = async (rule, value, callback) => {
   } else {
     try {
       await ajax.get('/api/account/check_email', {
-        username: value
+        email: value
       })
       callback()
     } catch (err) {
@@ -90,7 +90,7 @@ class AccountInfoPage extends React.Component {
       title: '用户名',
       display: user.username,
       callback: handleSubmit,
-      field: ['realName', {
+      field: ['username', {
         validateTrigger: 'onChange',
         rules: [{ required: true }, { validator: validateUsername }]
       }],

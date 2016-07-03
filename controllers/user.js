@@ -106,13 +106,57 @@ router.get('/account/logout', (req, res) => {
 router.get('/account/info', async (req, res) => {
   if (req.session.user) {
     const user = await User.findById(req.session.user._id)
-        .select('username nickname followings')
+        .select('email phone signature username nickname followings')
         .populate('followings', 'nickname').exec()
     return res.success({ user })
   } else {
     return res.fail()
   }
 })
+
+/** 检查邮箱是否存在 */
+router.get('/account/check_email', async (req, res) => {
+  const user = await User.findOne({
+    where: { email: req.query.email }
+  });
+  if (!user) {
+    return res.success();
+  } else {
+    return res.fail({ type: 'EMAIL_EXIST' });
+  }
+});
+
+/** 检查用户名是否存在 */
+router.get('/account/check_username', async (req, res) => {
+  const user = await User.findOne({
+    where: { username: req.query.username }
+  });
+  if (!user) {
+    return res.success();
+  } else {
+    return res.fail({ type: 'USERNAME_EXIST' });
+  }
+});
+
+/** 更新用户信息 */
+router.post('/account/update_info', async (req, res) => {
+  /** 权限验证 */
+  if (!req.session.user._id) {
+    return res.status(403).fail();
+  }
+  const attrs = ['avator', 'nickname', 'email', 'phone', 'username', 'signature'];
+  const user = await User.findById(req.session.user._id, {
+    // 必须要选出主键，后面才可以保存
+    attributes: attrs.concat(['id'])
+  });
+  for (let key in req.body) {
+    if (_.includes(attrs, key)) {
+      user[key] = req.body[key];
+    }
+  }
+  await user.save();
+  res.success({ user });
+});
 
 /** 更改登录密码 */
 router.post('/account/change_password', async (req, res) => {
