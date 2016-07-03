@@ -106,7 +106,7 @@ router.get('/account/logout', (req, res) => {
 router.get('/account/info', async (req, res) => {
   if (req.session.user) {
     const user = await User.findById(req.session.user._id)
-        .select('email phone signature username nickname followings')
+        .select('email phone isOrganization signature username nickname followings')
         .populate('followings', 'nickname').exec()
     return res.success({ user })
   } else {
@@ -144,11 +144,13 @@ router.post('/account/check_password', async (req, res) => {
   if (!req.session.user._id) {
     return res.status(403).fail();
   }
-  const user = await User.findById(req.session.user._id, {
-    attributes: ['password']
-  });
-  const loginPass = sha256x2(req.body.password);
-  if (password === user.password) {
+  console.log(req.body);
+  const user = await User.findById(req.session.user._id)
+                .select('_id password').exec()
+  const password = sha256x2(req.body.password);
+  console.log(user);
+  console.log(password);
+  if (user && password === user.password) {
     return res.success();
   } else {
     return res.fail({ type: 'WRONG_PASSWORD'});
@@ -180,9 +182,8 @@ router.post('/account/change_password', async (req, res) => {
     if (!req.session.user._id) {
       return res.status(403).fail();
     }
-    const user = await User.findById(req.session.user._id, {
-      attributes: ['password']
-    });
+    const user = await User.findById(req.session.user._id)
+                  .select('_id password').exec()
     user.password = sha256x2(req.body.password);
     await user.save();
     return res.success();
