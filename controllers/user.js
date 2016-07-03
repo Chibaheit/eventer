@@ -138,6 +138,23 @@ router.get('/account/check_username', async (req, res) => {
   }
 });
 
+/** 验证登录密码 */
+router.post('/account/check_password', async (req, res) => {
+  /** 权限验证 */
+  if (!req.session.user._id) {
+    return res.status(403).fail();
+  }
+  const user = await User.findById(req.session.user._id, {
+    attributes: ['password']
+  });
+  const loginPass = sha256x2(req.body.password);
+  if (password === user.password) {
+    return res.success();
+  } else {
+    return res.fail({ type: 'WRONG_PASSWORD'});
+  }
+});
+
 /** 更新用户信息 */
 router.post('/account/update_info', async (req, res) => {
   /** 权限验证 */
