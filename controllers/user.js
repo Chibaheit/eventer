@@ -12,7 +12,7 @@ const router = Router()
  * @uri /api/account/register
  * @body { username, password, email }
  */
-router.post('/account/register/:role', async (req, res) => {
+router.post('/account/register/:role?', async (req, res) => {
   // Recheck format
   let errors
   // Check unique
@@ -103,9 +103,13 @@ router.get('/account/logout', (req, res) => {
  * @method GET
  * @uri /api/account/info
  */
-router.get('/account/info', async (req, res) => {
-  if (req.session.user) {
-    const user = await User.findById(req.session.user._id)
+router.get('/account/info/:id?', async (req, res) => {
+  let id = req.params.id;
+  if (req.session.user && req.params.id === undefined) {
+    id = req.session.user._id;
+  }
+  if (id){
+    const user = await User.findById(id)
         .select('email phone isOrganization signature username nickname followings')
         .populate('followings', 'nickname').exec()
     return res.success({ user })
@@ -144,12 +148,9 @@ router.post('/account/check_password', async (req, res) => {
   if (!req.session.user._id) {
     return res.status(403).fail();
   }
-  console.log(req.body);
   const user = await User.findById(req.session.user._id)
                 .select('_id password').exec()
   const password = sha256x2(req.body.password);
-  console.log(user);
-  console.log(password);
   if (user && password === user.password) {
     return res.success();
   } else {
@@ -205,6 +206,14 @@ router.get('/account/search', async (req, res) => {
   const users = await User.find({ username: new RegExp(req.query.q, 'i') })
       .select('username nickname').exec()
   return res.success({ users })
+})
+
+/***
+* User timeline
+* @method GET
+* return [{ username. isOrganization, activity.name, username.activity.time}]
+*/
+router.get('/account/timeline', async (req, res) => {
 })
 
 export default router
