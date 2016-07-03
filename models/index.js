@@ -12,5 +12,4 @@ mongoose.connect(config.mongo.uri, config.mongo.options, (err) => {
 })
 
 export User from './user'
-export Group from './group'
-export Chat from './chat'
+export Activity from './activity'

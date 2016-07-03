@@ -9,7 +9,7 @@ const userSchema = new Schema({
   password: {
     type: String
   },
-  name: {
+  nickname: {
     type: String
   },
   email: {
@@ -17,19 +17,22 @@ const userSchema = new Schema({
     index: true,
     unique: true
   },
-  chats: [{
-    // 0: 私聊, 1: 群聊
-    type: { type: Number },
-    target: { type: Schema.Types.ObjectId },
-    chat: {
-      type: Schema.Types.ObjectId,
-      ref: 'Chat'
-    },
-    lastVisited: {
-      type: Date,
-      default: Date.now()
-    }
+  activities : [{
+      activity : {
+          type: Schema.Types.ObjectId,
+          ref: 'Activities'
+      },
+      time : {
+          type : Date,
+          default : Date.now()
+      }
   }],
+  followings : [{
+      user : {
+          type: Schema.Types.ObjectId,
+          ref: 'User'
+      }
+  }]
   lastVisited: {
     type: Date,
     default: Date.now()
