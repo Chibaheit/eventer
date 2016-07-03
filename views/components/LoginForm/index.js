@@ -71,7 +71,7 @@ class RegisterForm extends React.Component {
         </Button>
         <div className={styles.bottomRight}>
           <a onClick={this.props.handleSwitchPanel.bind(this, 1)}>
-            <Icon type="right" /> 注册用户
+            <Icon type="right" /> 普通用户注册
           </a>
         </div>
       </Form>
