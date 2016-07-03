@@ -17,7 +17,7 @@ const userSchema = new Schema({
     default : ''
   },
   avator: {
-    type: String
+    type: String,
     default : ''
   },
   email: {

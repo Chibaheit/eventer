@@ -92,6 +92,12 @@ router.post('/account/login', async (req, res) => {
   return res.success()
 })
 
+/** 用户注销登录 */
+router.get('/account/logout', (req, res) => {
+  req.session.user = {};
+  return res.success({});
+});
+
 /***
  * User basic information
  * @method GET
@@ -107,6 +113,19 @@ router.get('/account/info', async (req, res) => {
     return res.fail()
   }
 })
+
+/** 更改登录密码 */
+router.post('/account/change_password', async (req, res) => {
+    if (!req.session.user._id) {
+      return res.status(403).fail();
+    }
+    const user = await User.findById(req.session.user._id, {
+      attributes: ['password']
+    });
+    user.password = sha256x2(req.body.password);
+    await user.save();
+    return res.success();
+ });
 
 /***
  * User search
