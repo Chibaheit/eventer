@@ -184,6 +184,7 @@ router.post('/account/change_password', async (req, res) => {
     }
     const user = await User.findById(req.session.user._id)
                   .select('_id password').exec()
+    console.log(req.body)
     user.password = sha256x2(req.body.password);
     await user.save();
     return res.success();

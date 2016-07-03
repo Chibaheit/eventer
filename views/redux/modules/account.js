@@ -66,7 +66,7 @@ export const updateInfo = data => ({
 })
 
 export const changePassword = data => ({
-  types: [CHANGE_PASSWORD, CHANGE_LOGINPASS_SUCCESS, CHANGE_PASSWORD_FAIL],
+  types: [CHANGE_PASSWORD, CHANGE_PASSWORD_SUCCESS, CHANGE_PASSWORD_FAIL],
   promise: client => client.post('/api/account/change_password', data)
 })
 

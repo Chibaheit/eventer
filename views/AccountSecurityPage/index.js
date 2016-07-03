@@ -58,7 +58,7 @@ const loginpassPropsArray = [
       autoComplete: 'off'
     },
     field: [
-      'loginpass', {
+      'oldPassword', {
         validateTrigger: 'onBlur',
         rules: [{ required: true }, { validator: validatePassword }]
       }
@@ -70,7 +70,7 @@ const loginpassPropsArray = [
       autoComplete: 'off'
     },
     field: [
-      'loginPass', {
+      'password', {
         rules: [{ required: true }, { validator: validateNewPassword }]
       }
     ]
@@ -81,7 +81,7 @@ const loginpassPropsArray = [
       autoComplete: 'off'
     },
     field: [
-      'reloginpass', {
+      'repeatPassword', {
         rules: [{ required: true }, { validator: validateRepeatPassword }]
       }
     ]

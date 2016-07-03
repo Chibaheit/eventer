@@ -4,7 +4,7 @@ import { Form, Input, Icon, Button } from 'antd'
 import { connect } from 'react-redux'
 import is from 'is_js'
 
-import { register } from '../../redux/modules/account'
+import { registerOrganization } from '../../redux/modules/account'
 
 import store from '../../redux/store'
 import ajax from '../../base/ajax'
@@ -45,7 +45,7 @@ const validate = values => {
   fields: ['email', 'password', 'username'],
   validate
 }, undefined, {
-  onSubmit: data => register(data)
+  onSubmit: data => registerOrganization(data)
 })
 class RegisterForm extends React.Component {
   render() {
