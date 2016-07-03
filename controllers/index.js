@@ -1,23 +1,13 @@
-'use strict'
-const Router = require('express').Router;
-const accountRouter = require('./account');
-const orderRouter = require('./order');
-const attachmentRouter = require('./attachment');
-const rootRouter = require('./root');
-const adminRouter = require('./admin');
-const auditorRouter = require('./auditor');
+import { Router } from 'express'
+import userRouter from './user'
+import chatRouter from './chat'
 
-/** API 路由，将不同模块的后端请求分发 */
-const apiRouter = Router();
-apiRouter.use(accountRouter);
-apiRouter.use(orderRouter);
-apiRouter.use(attachmentRouter);
-apiRouter.use(adminRouter);
-apiRouter.use(auditorRouter);
-apiRouter.all('*', (req, res) => res.status(404).send('Not Found'));
+const router = Router()
 
-const router = Router();
-router.use('/api', apiRouter);
-router.use(rootRouter);
+const apiRouter = Router()
+apiRouter.use(userRouter)
+apiRouter.use(chatRouter)
 
-module.exports = router;
+router.use('/api', apiRouter)
+
+export default router

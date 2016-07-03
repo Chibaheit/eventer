@@ -1,18 +1,14 @@
+'use strict'
 module.exports = {
+  mongo: {
+    uri: 'mongodb://127.0.0.1:27017/eventer',
+    options: {}
+  },
+  redis: {
+    host: '127.0.0.1',
+    port: 6379
+  },
   cookie: {
-    secret: 'Wxdf3_2Pmzrxfa'
-  },
-  database: {
-    db: 'blipay',
-    username: 'root',
-    password: 'chibaheit',
-    dialect: 'mysql',
-    host: 'localhost',
-    pool: {
-      min: 0,
-      max: 10,
-      idle: 1000
-    }
-  },
-  upload: './upload'
-};
+    secret: 'd02kg40d83kca0e29fkd02384gld1d23'
+  }
+}

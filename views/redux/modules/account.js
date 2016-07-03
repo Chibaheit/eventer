@@ -28,7 +28,7 @@ const initialState = {
 
 export const register = data => ({
   types: [REGISTER, REGISTER_SUCCESS, REGISTER_FAIL],
-  promise: client => client.post('/api/users', data)
+  promise: client => client.post('/api/account/register', data)
 })
 
 export const login = (data) => ({

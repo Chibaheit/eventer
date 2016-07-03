@@ -11,24 +11,22 @@ const ajax = {
     } catch (err) {
       throw err
     }
-    if (res.status >= 400) {
-      throw res.error.errors
-    }
+    if (res._ !== 0)
+      throw res.error
     return res.data
   },
   post: async function ajax$post(url, params = {}, options = {}) {
     options.dataType = options.dataType || 'json'
     options.responseType = options.responseType || 'text'
-    let res;
+    let res
     try {
       const xhr = await qwest.post(url, params, options)
       res = JSON.parse(xhr.response)
     } catch (err) {
       throw err
     }
-    if (res.status >= 400) {
-      throw res.error.errors
-    }
+    if (res._ !== 0)
+      throw res.error
     return res.data
   }
 }
