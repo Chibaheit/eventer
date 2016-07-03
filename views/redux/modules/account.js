@@ -29,14 +29,11 @@ const CHANGE_PASSWORD = 'Eventer/account/CHANGE_PASSWORD'
 const CHANGE_PASSWORD_SUCCESS = 'Eventer/account/CHANGE_PASSWORD_SUCCESS'
 const CHANGE_PASSWORD_FAIL = 'Eventer/account/CHANGE_PASSWORD_FAIL'
 
+const TOGGLE_MODIFY_PASSWORD = 'Eventer/account/TOGGLE_MODIFY_PASSWORD'
+
 const initialState = {
   user: null
 }
-
-export const registerOrganization = data => ({
-  types: [REGISTERORGANIZATION, REGISTERORGANIZATION_SUCCESS, REGISTERORGANIZATION_FAIL],
-  promise: client => client.post('/api/account/register/organization')
-})
 
 export const registerOrganization = data => ({
   types: [REGISTER_ORGANIZATION, REGISTER_ORGANIZATION_SUCCESS, REGISTER_ORGANIZATION_FAIL],
@@ -68,9 +65,13 @@ export const updateInfo = data => ({
   promise: client => client.post('/api/account/update_info', data)
 })
 
-export const changPassword = data => ({
+export const changePassword = data => ({
   types: [CHANGE_PASSWORD, CHANGE_LOGINPASS_SUCCESS, CHANGE_PASSWORD_FAIL],
   promise: client => client.post('/api/account/change_password', data)
+})
+
+export const toggleModifyPassword = () => ({
+  type: TOGGLE_MODIFY_PASSWORD
 })
 
 export default function reducer(state = initialState, action = {}) {
@@ -111,6 +112,11 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         user: { ...state.user, ...action.result.user }
+      }
+    case TOGGLE_MODIFY_PASSWORD:
+      return {
+        ...state,
+        showModifyPasswordModal: !state.showModifyPasswordModal
       }
     default:
       return state
