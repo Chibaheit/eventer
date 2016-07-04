@@ -16,6 +16,7 @@ import AccountPage from './AccountPage'
 import AccountTimelinePage from './AccountTimelinePage'
 import AccountInfoPage from './AccountInfoPage'
 import AccountSecurityPage from './AccountSecurityPage'
+import TestPage from './TestPage'
 import NotFoundPage from './NotFoundPage'
 
 const history = syncHistoryWithStore(browserHistory, store)
@@ -24,6 +25,7 @@ const router = (
   <Provider store={store}>
     <Router history={history}
             render={(props) => <ReduxAsyncConnect {...props} />}>
+      <Route path="/test" component={TestPage} />
       <Route path="/" component={App} >
         <IndexRoute component={MainPage} />
         <Route path="/account" component={AccountPage} >

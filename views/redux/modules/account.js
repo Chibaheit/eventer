@@ -31,8 +31,22 @@ const CHANGE_PASSWORD_FAIL = 'Eventer/account/CHANGE_PASSWORD_FAIL'
 
 const TOGGLE_MODIFY_PASSWORD = 'Eventer/account/TOGGLE_MODIFY_PASSWORD'
 
+const FOLLOW = 'Eventer/account/FOLLOW'
+const FOLLOW_SUCCESS = 'Eventer/account/FOLLOW_SUCCESS'
+const FOLLOW_FAIL = 'Eventer/account/FOLLOW_FAIL'
+
+const UNFOLLOW = 'Eventer/account/UNFOLLOW'
+const UNFOLLOW_SUCCESS = 'Eventer/account/UNFOLLOW_SUCCESS'
+const UNFOLLOW_FAIL = 'Eventer/account/UNFOLLOW_FAIL'
+
+const FETCH_TIMELINE = 'Eventer/account/FETCH_TIMELINE'
+const FETCH_TIMELINE_SUCCESS = 'Eventer/account/FETCH_TIMELINE_SUCCESS'
+const FETCH_TIMELINE_FAIL = 'Eventer/account/FETCH_TIMELINE_FAIL'
+
 const initialState = {
-  user: null
+  user: null,
+  follow: [],
+  timeline: null
 }
 
 export const registerOrganization = data => ({
@@ -72,6 +86,21 @@ export const changePassword = data => ({
 
 export const toggleModifyPassword = () => ({
   type: TOGGLE_MODIFY_PASSWORD
+})
+
+export const follow = data => ({
+  types: [FOLLOW, FOLLOW_SUCCESS, FOLLOW_FAIL],
+  promise: client => client.post('/api/account/follow')
+})
+
+export const unfollow = data => ({
+  types: [UNFOLLOW, UNFOLLOW_SUCCESS, UNFOLLOW_FAIL],
+  promise: client => client.post('/api/account/unfollow')
+})
+
+export const fetchTimeline = data => ({
+  types: [FETCH_TIMELINE, FETCH_TIMELINE_SUCCESS, FETCH_TIMELINE_FAIL],
+  promise: client => client.get('/api/account/timeline')
 })
 
 export default function reducer(state = initialState, action = {}) {
@@ -117,6 +146,11 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         showModifyPasswordModal: !state.showModifyPasswordModal
+      }
+    case FETCH_TIMELINE_SUCCESS:
+      return {
+        ...state,
+        timeline: action.result.timeline
       }
     default:
       return state
