@@ -37,7 +37,7 @@ router.post('/activity/create', async (req, res) => {
         participator: [],
     })
     await activity.save();
-    return res.success();
+    return res.success({ activity });
 })
 
 /***
@@ -124,7 +124,7 @@ router.POST('/activity/join/:id', (req, res) => {
     user.join(activity);
     await user.save();
     await activity.save();
-    return res.success();
+    return res.success({ activity });
 });
 
 /***
