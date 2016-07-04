@@ -57,7 +57,7 @@ router.post('/activity/remove', async (req, res) => {
     console.log(req.body);
     console.log(activity);
     console.log(req.session.user);
-    if (!activity || activity.creator != req.session.user._id){
+    if (!activity || String(activity.creator) != String(req.session.user._id)){
         return res.status(403).fail();
     }
     await activity.unjoin_all();
@@ -79,12 +79,10 @@ router.post('/activity/update_info/:id', async (req, res) => {
         return res.status(403).fail();
     }
     const attrs = ['title', 'content', 'location', 'startTime', 'endTime'];
-    const activity = await Activity.findById(req.params.id, {
-        // 必须要选出主键，后面才可以保存
-        attributes: attrs.concat(['id'])
-    });
+    const activity = await Activity.findById(req.params.id)
+                        .select(attrs.join(' ') + ' creator');
     // authentication Check
-    if (!activity || activity.creator != req.session.user._id){
+    if (!activity || String(activity.creator) != String(req.session.user._id)){
         return res.status(403).fail();
     }
     for (let key in req.body) {
@@ -105,7 +103,7 @@ router.get('/activity/info/:id', async (req, res) => {
     if (id){
         const activity = await Activity.findById(id)
             .select('title content location startTime endTime participator')
-            .populate('participator', 'nickname').exec()
+            .populate('participator.user', 'nickname').exec()
         return res.success({ activity })
     } else {
         return res.fail();
@@ -120,7 +118,7 @@ router.get('/activity/info/:id', async (req, res) => {
  */
 router.post('/activity/join/:id', async (req, res) => {
     let id = req.params.id;
-    if (!id || !req.session.user._id){
+    if (!id || !req.session.user._id || req.session.isOrganization){
         res.status(403).fail();
     }
     const activity = await Activity.findById(req.params.id);
@@ -139,15 +137,15 @@ router.post('/activity/join/:id', async (req, res) => {
  */
 router.post('/activity/unjoin/:id', async (req, res) => {
     let id = req.params.id;
-    if (!id || !req.session.user._id){
+    if (!id || !req.session.user._id || req.session.isOrganization){
         res.status(403).fail();
     }
-    const activity = await Activity.findById(req.params.id);
-    const user = await User.findById(req.session.user._id);
+    let activity = await Activity.findById(req.params.id);
+    let user = await User.findById(req.session.user._id);
     user.unjoin(activity)
     await user.save();
     await activity.save();
-    return res.success()
+    return res.success({ activity })
 });
 
 /***
@@ -165,6 +163,7 @@ router.get('/activity/search', async (req, res) => {
     }
     const activities = await Activity.find({ title: new RegExp(req.query.q, 'i') })
         .select('_id title content location startTime endTime').exec();
+    console.log(activities);
     return res.success({ activities });
 })
 

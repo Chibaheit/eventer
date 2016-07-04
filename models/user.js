@@ -54,14 +54,16 @@ const userSchema = new Schema({
   }
 })
 
-userSchema.methods.joined = (activity_id) => {
-    return _.findIndex(this.activity, (item) => {
-        return item._id == activity_id;
+userSchema.methods.joined = function (activity_id){
+    return _.findIndex(this.activities, (item) => {
+        return String(item.activity) == String(activity_id);
     });
 }
 
-userSchema.methods.join = (activity) => {
-    if (this.joined(activity._id)){
+userSchema.methods.join = function (activity){
+    let index = this.joined(activity._id);
+    if (index >= 0){
+        console.log('joined');
         return;
     }
     let time = Date.now();
@@ -69,32 +71,37 @@ userSchema.methods.join = (activity) => {
         activity : activity._id,
         time : time
     })
-    activities.participator.push({
+    activity.participator.push({
         user : this._id,
         time : time
     })
 }
 
-userSchema.methods.unjoin = (activity) => {
-    if (!this.joined(activity._id)){
+userSchema.methods.unjoin = function (activity){
+    let index = this.joined(activity._id);
+    if (index < 0){
+        console.log('not joined before');
         return;
     }
     _.remove(activity.participator, (item) => {
-        return item._id == this._id;
+        return String(item.user) == String(this._id);
     });
-    _.remove(this.activity, (item) => {
-        return item._id == activity._id;
+    activity.markModified('participator');
+    _.remove(this.activities, (item) => {
+        return String(item.activity) == String(activity._id);
     })
+    this.markModified('activities');
 }
 
-userSchema.methods.followed = (user_id) => {
+userSchema.methods.followed = function (user_id) {
     return _.findIndex(this.followings, (item) => {
-        return item._id == user_id;
+        return item.user == user_id;
     });
 }
 
-userSchema.methods.follow = (target) => {
-    if (this.followed(target._id)){
+userSchema.methods.follow = function (target){
+    let index = this.followed(target._id);
+    if (index >= 0){
         return;
     }
     let time = Date.now();
@@ -104,12 +111,13 @@ userSchema.methods.follow = (target) => {
     })
 }
 
-userSchema.methods.unfollow = (target) => {
-    if (this.followed(target._id)){
+userSchema.methods.unfollow = function (target){
+    let index = this.followed(target._id);
+    if (index < 0){
         return;
     }
     _.remove(this.followings, (item) => {
-        return item._id == target._id;
+        return String(item.user) == String(target._id);
     });
 }
 

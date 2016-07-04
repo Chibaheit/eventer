@@ -46,6 +46,34 @@ class TestPage extends React.Component {
                     id : "577a7208bd82f3db4101378d"
                 });
             }}>remove</Button>
+            <Button onClick={async () => {
+                await ajax.post("/api/activity/update_info/577a74277a8940d34332cbd8", {
+                    title : 'ha',
+                    content : 'haha',
+                    location : 'hz',
+                    startTime : Date.now(),
+                    endTime : Date.now()
+                });
+            }}>update</Button>
+            <br/>
+            <Button onClick={async () => {
+                await ajax.post("/api/activity/join/577a74277a8940d34332cbd8", {
+                });
+            }}>join</Button>
+            <Button onClick={async () => {
+                await ajax.post("/api/activity/unjoin/577a74277a8940d34332cbd8", {
+                });
+            }}>unjoin</Button>
+            <Button onClick={async () => {
+                await ajax.get("/api/activity/info/577a74277a8940d34332cbd8", {
+                });
+            }}>get info</Button>
+            <br/>
+            <Button onClick={async () => {
+                await ajax.get("/api/activity/search", {
+                    q : 'h'
+                });
+            }}>search</Button>
         </div>
     );
   }
