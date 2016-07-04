@@ -1,12 +1,12 @@
 import { Router } from 'express'
 import userRouter from './user'
-import chatRouter from './chat'
+import activityRouter from './activity'
 
 const router = Router()
 
 const apiRouter = Router()
 apiRouter.use(userRouter)
-apiRouter.use(chatRouter)
+apiRouter.use(activityRouter)
 
 router.use('/api', apiRouter)
 

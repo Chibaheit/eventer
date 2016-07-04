@@ -34,7 +34,7 @@ const activitySchema = new Schema({
 })
 
 activitySchema.methods.unjoin_all = async () => {
-    this.participator.map(async (item) => {
+    this.participator.forEach(async (item) => {
         const user = await User.findById(item._id);
         user.unjoin(this);
         user.save();

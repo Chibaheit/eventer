@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import ajax from '../base/ajax'
 
 import Container from '../components/Container'
 
@@ -30,9 +31,22 @@ class TestPage extends React.Component {
   render() {
     const { follow, unfollow, fetchTimeline, join, unjoin, createActivity, removeActivity, updateActivity } = this.props
     return (
-      <Button onClick={() => {
-        join('1')
-      }}>Test</Button>
+        <div>
+            <Button onClick={async () => {
+                await ajax.post("/api/activity/create", {
+                    title : 'ha',
+                    content : 'haha',
+                    location : 'hz',
+                    startTime : Date.now(),
+                    endTime : Date.now()
+                });
+            }}>create</Button>
+            <Button onClick={async () => {
+                await ajax.post("/api/activity/remove", {
+                    id : "577a7208bd82f3db4101378d"
+                });
+            }}>remove</Button>
+        </div>
     );
   }
 }

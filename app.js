@@ -14,9 +14,6 @@ import fallback from 'connect-history-api-fallback'
 import ConnectRedis from 'connect-redis'
 import Redis from 'ioredis'
 
-import SocketIO from 'socket.io'
-import IOSession from 'socket.io-express-session'
-
 import webpack from 'webpack'
 import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
@@ -25,7 +22,7 @@ import webpackDevConfig from './webpack.config.dev'
 import './models'
 import config from './config'
 import controllers from './controllers'
-import ws from './controllers/ws'
+//import ws from './controllers/ws'
 
 const env = process.env.NODE_ENV || 'development'
 const port = process.env.PORT || 3000
@@ -83,9 +80,6 @@ app.use((err, req, res, next) => {
 })
 
 const server = http.createServer(app)
-const io = SocketIO(server)
-io.use(IOSession(session))
-ws(io)
 
 server.listen(port, () => {
   console.log(`Ripple listening on port ${server.address().port}`)

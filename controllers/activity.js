@@ -8,7 +8,7 @@ const router = Router()
 
 /***
  * 创建新activity
- * isOrganiation === true
+ * isOrganization === true
  * @method POST
  * @params
  *    title : String
@@ -22,8 +22,9 @@ router.post('/activity/create', async (req, res) => {
     // Recheck format
     let errors
     // authentication Check
+    console.log(req.session.user);
     if (!req.session.user._id || !req.session.user.isOrganization){
-        res.status(403).fail();
+        return res.status(403).fail();
     }
     console.log(req.body);
     // Create user
@@ -42,17 +43,20 @@ router.post('/activity/create', async (req, res) => {
 
 /***
  * 删除activity
- * isOrganiation === true
+ * isOrganization === true
  * @method POST
  * @params
  *    id : String
  */
 router.post('/activity/remove', async (req, res) => {
-    if (!req.session.user._id || !req.params.id) {
+    if (!req.session.user._id || !req.body.id) {
         return res.status(403).fail();
     }
-    const activity = await Activity.findById(req.params.id);
+    const activity = await Activity.findById(req.body.id);
     // authentication Check
+    console.log(req.body);
+    console.log(activity);
+    console.log(req.session.user);
     if (!activity || activity.creator != req.session.user._id){
         return res.status(403).fail();
     }
@@ -63,14 +67,14 @@ router.post('/activity/remove', async (req, res) => {
 
 /***
  * 修改activity
- * isOrganiation === true
+ * isOrganization === true
  *    title : String
  *    content : String
  *    location : String
  *    startTime : Date
  *    endTime : Date
  */
-router.POST('/activity/update_info/:id', (req, res) => {
+router.post('/activity/update_info/:id', async (req, res) => {
     if (!req.session.user._id || !req.params.id) {
         return res.status(403).fail();
     }
@@ -114,7 +118,7 @@ router.get('/activity/info/:id', async (req, res) => {
  * @params :
  *  :id : String
  */
-router.POST('/activity/join/:id', (req, res) => {
+router.post('/activity/join/:id', async (req, res) => {
     let id = req.params.id;
     if (!id || !req.session.user._id){
         res.status(403).fail();
@@ -133,7 +137,7 @@ router.POST('/activity/join/:id', (req, res) => {
  * @params :
  *  :id : String
  */
-router.POST('/activity/unjoin/:id', (req, res) => {
+router.post('/activity/unjoin/:id', async (req, res) => {
     let id = req.params.id;
     if (!id || !req.session.user._id){
         res.status(403).fail();

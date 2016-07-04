@@ -1,8 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import { browserHistory } from 'react-router'
 import { routerMiddleware } from 'react-router-redux'
-import socketIOMiddleware from 'redux-socket.io'
-import io from 'socket.io-client'
 
 import reducer from './modules/reducer'
 import ajax from '../base/ajax'
@@ -34,12 +32,10 @@ function ajaxMiddleware(client) {
 
 const _routerMiddleware = routerMiddleware(browserHistory)
 const _ajaxMiddleware = ajaxMiddleware(ajax)
-const socket = io()
-const _socketIOMiddleware = socketIOMiddleware(socket, 'ripple/ws/')
 
 const store = createStore(
   reducer, compose(
-    applyMiddleware(_routerMiddleware, _ajaxMiddleware, _socketIOMiddleware),
+    applyMiddleware(_routerMiddleware, _ajaxMiddleware),
     process.env.NODE_ENV === 'development' && window.devToolsExtension ?
         window.devToolsExtension() : f => f
   )

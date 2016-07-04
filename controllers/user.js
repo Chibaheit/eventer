@@ -72,7 +72,7 @@ router.post('/account/login', async (req, res) => {
       { username: _.toLower(req.body.email) },
       { email: _.toLower(req.body.email) }
     ]
-  }).select('name password').exec()
+  }).select('_id isOrganization nickname password').exec()
   // Check if email and password are matched
   const errors = {}
   if (!user) {
@@ -94,7 +94,7 @@ router.post('/account/login', async (req, res) => {
 
 /** 用户注销登录 */
 router.get('/account/logout', (req, res) => {
-  req.session.user = {};
+  req.session.user = null;
   return res.success({});
 });
 

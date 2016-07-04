@@ -2,6 +2,7 @@ import React from 'react'
 
 import RegisterForm from '../RegisterForm'
 import LoginForm from '../LoginForm'
+import RegisterOrganizationForm from '../RegisterOrganizationForm'
 
 import styles from './styles'
 
@@ -31,6 +32,8 @@ class MixedForm extends React.Component {
           <LoginForm handleSwitchPanel={this.handleSwitchPanel} /> }
         { this.state.activeForm == 1 &&
           <RegisterForm handleSwitchPanel={this.handleSwitchPanel} /> }
+        { this.state.activeForm == 2 &&
+          <RegisterOrganizationForm handleSwitchPanel={this.handleSwitchPanel} /> }
       </div>
     )
   }
