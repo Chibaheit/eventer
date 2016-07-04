@@ -4,7 +4,7 @@ import { reduxForm } from 'redux-form'
 import { Form, Input, Row, Col, Button, InputNumber,
           Upload, Icon, Modal, DatePicker, Alert, message } from 'antd'
 import Container from '../components/Container'
-import AccountAddPageHeader from '../components/AccountAddPageHeader'
+import AccountActivityHeader from '../components/AccountActivityHeader'
 
 import { createActivity } from '../redux/modules/activity'
 const RangePicker = DatePicker.RangePicker
@@ -92,7 +92,7 @@ class AccountAddPage extends React.Component {
   render() {
       return (
         <div>
-          <AccountAddPageHeader icon="plus-circle-o" text="添加活动" />
+          <AccountActivityHeader icon="plus-circle-o" text="添加活动" />
           <AccountAddPageForm />
         </div>
       );

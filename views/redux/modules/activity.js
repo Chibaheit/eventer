@@ -1,5 +1,6 @@
 import store from '../store'
 import { push } from 'react-router-redux'
+import { message } from 'antd'
 
 const JOIN = 'Eventer/activity/JOIN'
 const JOIN_SUCCESS = 'Eventer/activity/JOIN_SUCCESS'
@@ -24,6 +25,10 @@ const UPDATE_FAIL = 'Eventer/activity/UPDATE_FAIL'
 const SEARCH = 'Eventer/activity/SEARCH'
 const SEARCH_SUCCESS = 'Eventer/activity/SEARCH_SUCCESS'
 const SEARCH_FAIL = 'Eventer/activity/SEARCH_FAIL'
+
+const LOAD_ACITIVITY = 'Eventer/activity/LOAD_ACITIVITY'
+const LOAD_ACITIVITY_SUCCESS = 'Eventer/activity/LOAD_ACITIVITY_SUCCESS'
+const LOAD_ACITIVITY_FAIL = 'Eventer/activity/LOAD_ACITIVITY_FAIL'
 
 const initialState = {
   total: [],
@@ -60,6 +65,11 @@ export const searchActivity = data => ({
   promise: client => client.get('/api/activity/search', data)
 })
 
+export const loadActivity = id => ({
+  types: [LOAD_ACITIVITY, LOAD_ACITIVITY_SUCCESS, LOAD_ACITIVITY_FAIL],
+  promise: client => client.get(`/api/activity/info/${id}`)
+})
+
 const checkIdx = (id, total) => {
   for (let i in total) {
     if (total[i] === id) {
@@ -82,6 +92,14 @@ const wrapUpdate = (activity, total) => ([
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case CREATE_SUCCESS:
+      message.success('创建活动成功')
+      setTimeout(() => {
+        store.dispatch(push(`/account/activity/${action.result.activity._id}`))
+      })
+      return {
+        ...state,
+        total: [...state.total, action.result.activity]
+      }
     case JOIN_SUCCESS:
       return {
         ...state,
@@ -102,6 +120,11 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         activities: action.result.activities
+      }
+    case LOAD_ACITIVITY_SUCCESS:
+      return {
+        ...state,
+        currentActivity: action.result.activity
       }
     default:
       return state
