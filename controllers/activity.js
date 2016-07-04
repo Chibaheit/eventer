@@ -47,7 +47,7 @@ router.post('/activity/create', async (req, res) => {
  * @params
  *    id : String
  */
-router.post('/activity/delete', async (req, res) => {
+router.post('/activity/remove', async (req, res) => {
     if (!req.session.user._id || !req.params.id) {
         return res.status(403).fail();
     }
@@ -145,5 +145,24 @@ router.POST('/activity/unjoin/:id', (req, res) => {
     await activity.save();
     return res.success()
 });
+
+/***
+ * 当前用户退出activity
+ * @method POST
+ * @params :
+ *  :id : String
+ */
+router.get('/activity/search', async (req, res) => {
+    if (!req.session.user) {
+        return res.forbidden();
+    }
+    if (!req.query.q || typeof req.query.q !== 'string') {
+        return res.bad();
+    }
+    const activities = await Activity.find({ title: new RegExp(req.query.q, 'i') })
+        .select('_id title content location startTime endTime').exec();
+    return res.success({ activities });
+})
+
 
 export default router

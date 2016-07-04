@@ -20,7 +20,7 @@ const userSchema = new Schema({
     type: String,
     default : ''
   },
-  avator: {
+  avatar: {
     type: String,
     default : ''
   },
@@ -85,6 +85,32 @@ userSchema.methods.unjoin = (activity) => {
     _.remove(this.activity, (item) => {
         return item._id == activity._id;
     })
+}
+
+userSchema.methods.followed = (user_id) => {
+    return _.findIndex(this.followings, (item) => {
+        return item._id == user_id;
+    });
+}
+
+userSchema.methods.follow = (target) => {
+    if (this.followed(target._id)){
+        return;
+    }
+    let time = Date.now();
+    this.followings.push({
+        user : target._id,
+        time : time
+    })
+}
+
+userSchema.methods.unfollow = (target) => {
+    if (this.followed(target._id)){
+        return;
+    }
+    _.remove(this.followings, (item) => {
+        return item._id == target._id;
+    });
 }
 
 const User = mongoose.model('User', userSchema)

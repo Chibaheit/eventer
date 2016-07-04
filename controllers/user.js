@@ -110,8 +110,8 @@ router.get('/account/info/:id?', async (req, res) => {
   }
   if (id){
     const user = await User.findById(id)
-        .select('email phone isOrganization signature username nickname followings')
-        .populate('followings', 'nickname').exec()
+        .select('email phone isOrganization signature username nickname activities followings')
+        .populate('followings.user', 'nickname').exec()
     return res.success({ user })
   } else {
     return res.fail()
@@ -164,7 +164,7 @@ router.post('/account/update_info', async (req, res) => {
   if (!req.session.user._id) {
     return res.status(403).fail();
   }
-  const attrs = ['avator', 'nickname', 'email', 'phone', 'username', 'signature'];
+  const attrs = ['avatar', 'nickname', 'email', 'phone', 'username', 'signature'];
   const user = await User.findById(req.session.user._id, {
     // 必须要选出主键，后面才可以保存
     attributes: attrs.concat(['id'])
@@ -198,14 +198,14 @@ router.post('/account/change_password', async (req, res) => {
  */
 router.get('/account/search', async (req, res) => {
   if (!req.session.user) {
-    return res.forbidden()
+    return res.forbidden();
   }
   if (!req.query.q || typeof req.query.q !== 'string') {
-    return res.bad()
+    return res.bad();
   }
   const users = await User.find({ username: new RegExp(req.query.q, 'i') })
-      .select('username nickname').exec()
-  return res.success({ users })
+      .select('username nickname').exec();
+  return res.success({ users });
 })
 
 /***
@@ -213,7 +213,62 @@ router.get('/account/search', async (req, res) => {
 * @method GET
 * return [{ username. isOrganization, activity.name, activity.id, username.activity.time}]
 */
+/**
+username: 'Chiba',
+nickname: 'Chiba',
+avatar: 'https://pbs.twimg.com/profile_images/745450979894525952/JcFDk3BR_bigger.jpg',
+isOrganization: false,
+title: '吃饭',
+time: new Date()
+*/
 router.get('/account/timeline', async (req, res) => {
-})
+    if (!req.session.user._id){
+        return res.fail();
+    }
+    const user = await User.findById(req.session.user._id);
+    let timeline = [];
+    user.followings.map(async (item) => {
+        const follow = await User.findById(item._id)
+                        .populate('activities.activity', 'title');;
+        follow.activities.map((item) => {
+            timeline.push({
+                username : follow.username,
+                nickname : follow.nickname,
+                avatar : follow.avatar,
+                isOrganization : follow.isOrganization,
+                title : item.title,
+                time : item.time,
+            })
+        })
+    })
+    timeline.sort((a, b) => {
+        return a.time - b.time;
+    });
+    return res.success([ timeline ]);
+});
+
+/** 用户follow */
+router.post('/account/follow', async (req, res) => {
+    if (!req.session.user._id) {
+      return res.status(403).fail();
+    }
+    const user = await User.findById(req.session.user._id);
+    const target = await User.findById(req.body.user_id);
+    user.follow(target);
+    await user.save();
+    return res.success();
+ });
+
+ /** 用户follow */
+ router.post('/account/unfollow', async (req, res) => {
+     if (!req.session.user._id) {
+       return res.status(403).fail();
+     }
+     const user = await User.findById(req.session.user._id);
+     const target = await User.findById(req.body.user_id);
+     user.unfollow(target);
+     await user.save();
+     return res.success();
+  });
 
 export default router
