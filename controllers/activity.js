@@ -22,11 +22,9 @@ router.post('/activity/create', async (req, res) => {
     // Recheck format
     let errors
     // authentication Check
-    console.log(req.session.user);
     if (!req.session.user._id || !req.session.user.isOrganization){
         return res.status(403).fail();
     }
-    console.log(req.body);
     // Create user
     const activity = new Activity({
         title: req.body.title || '',
@@ -37,6 +35,12 @@ router.post('/activity/create', async (req, res) => {
         creator: req.session.user._id,
         participator: [],
     })
+    const user = await User.findById(req.session.user._id);
+    user.activities.push({
+        activity : activity._id,
+        time : Date.now()
+    })
+    await user.save();
     await activity.save();
     return res.success({ activity });
 })
@@ -54,12 +58,15 @@ router.post('/activity/remove', async (req, res) => {
     }
     const activity = await Activity.findById(req.body.id);
     // authentication Check
-    console.log(req.body);
-    console.log(activity);
-    console.log(req.session.user);
     if (!activity || String(activity.creator) != String(req.session.user._id)){
         return res.status(403).fail();
     }
+    const user = await User.findById(req.session.user._id);
+    _.remove(user.activities, (item) => {
+        return String(item.activity) == String(activity._id);
+    });
+    user.markModified('activities');
+    await user.save();
     await activity.unjoin_all();
     await activity.remove();
     return res.success();
@@ -163,7 +170,6 @@ router.get('/activity/search', async (req, res) => {
     }
     const activities = await Activity.find({ title: new RegExp(req.query.q, 'i') })
         .select('_id title content location startTime endTime').exec();
-    console.log(activities);
     return res.success({ activities });
 })
 

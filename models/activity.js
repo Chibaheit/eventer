@@ -34,12 +34,12 @@ const activitySchema = new Schema({
 })
 
 activitySchema.methods.unjoin_all = async function() {
-    this.participator.forEach(async (item) => {
-        const user = await User.findById(item._id);
+    for (let item of this.participator){
+        const user = await User.findById(item.user);
         user.unjoin(this);
-        user.save();
-        this.save();
-    });
+        await user.save();
+        await this.save();
+    }
 }
 
 const Activity = mongoose.model('Activity', activitySchema)

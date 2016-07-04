@@ -185,7 +185,6 @@ router.post('/account/change_password', async (req, res) => {
     }
     const user = await User.findById(req.session.user._id)
                   .select('_id password').exec()
-    console.log(req.body)
     user.password = sha256x2(req.body.password);
     await user.save();
     return res.success();
@@ -227,29 +226,30 @@ router.get('/account/timeline', async (req, res) => {
     }
     const user = await User.findById(req.session.user._id);
     let timeline = [];
-    user.followings.map(async (item) => {
-        const follow = await User.findById(item._id)
-                        .populate('activities.activity', 'title');;
+    for (let item of user.followings){
+        const follow = await User.findById(item.user)
+                        .populate('activities.activity', 'title', 'Activity');
         follow.activities.map((item) => {
-            timeline.push({
+            let tlitem = {
                 username : follow.username,
                 nickname : follow.nickname,
                 avatar : follow.avatar,
                 isOrganization : follow.isOrganization,
-                title : item.title,
+                title : item.activity.title,
                 time : item.time,
-            })
+            };
+            timeline.push(tlitem);
         })
-    })
+    }
     timeline.sort((a, b) => {
         return a.time - b.time;
     });
-    return res.success([ timeline ]);
+    return res.success({ timeline });
 });
 
 /** 用户follow */
 router.post('/account/follow', async (req, res) => {
-    if (!req.session.user._id) {
+    if (!req.session.user._id || !req.body.user_id) {
       return res.status(403).fail();
     }
     const user = await User.findById(req.session.user._id);
@@ -261,7 +261,7 @@ router.post('/account/follow', async (req, res) => {
 
  /** 用户follow */
  router.post('/account/unfollow', async (req, res) => {
-     if (!req.session.user._id) {
+     if (!req.session.user._id || !req.body.user_id) {
        return res.status(403).fail();
      }
      const user = await User.findById(req.session.user._id);

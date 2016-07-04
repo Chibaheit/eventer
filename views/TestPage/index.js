@@ -43,11 +43,11 @@ class TestPage extends React.Component {
             }}>create</Button>
             <Button onClick={async () => {
                 await ajax.post("/api/activity/remove", {
-                    id : "577a7208bd82f3db4101378d"
+                    id : "577a8c9b5174a8e158c24559"
                 });
             }}>remove</Button>
             <Button onClick={async () => {
-                await ajax.post("/api/activity/update_info/577a74277a8940d34332cbd8", {
+                await ajax.post("/api/activity/update_info/577a8c9b5174a8e158c24559", {
                     title : 'ha',
                     content : 'haha',
                     location : 'hz',
@@ -55,20 +55,47 @@ class TestPage extends React.Component {
                     endTime : Date.now()
                 });
             }}>update</Button>
-            <br/>
+            <hr/>
             <Button onClick={async () => {
-                await ajax.post("/api/activity/join/577a74277a8940d34332cbd8", {
+                await ajax.post("/api/activity/join/577a8c9b5174a8e158c24559", {
                 });
             }}>join</Button>
             <Button onClick={async () => {
-                await ajax.post("/api/activity/unjoin/577a74277a8940d34332cbd8", {
+                await ajax.post("/api/activity/unjoin/577a8c9b5174a8e158c24559", {
                 });
             }}>unjoin</Button>
             <Button onClick={async () => {
-                await ajax.get("/api/activity/info/577a74277a8940d34332cbd8", {
+                await ajax.get("/api/activity/info/577a8c9b5174a8e158c24559", {
                 });
             }}>get info</Button>
-            <br/>
+            <hr/>
+            <Button onClick={async () => {
+                await ajax.post("/api/account/follow", {
+                    user_id : '577a86fda058e65353595259'
+                });
+            }}>follow org</Button>
+            <Button onClick={async () => {
+                await ajax.post("/api/account/follow", {
+                    user_id : '577a86eea058e65353595258'
+                });
+            }}>follow user</Button>
+             | |
+            <Button onClick={async () => {
+                await ajax.post("/api/account/unfollow", {
+                    user_id : '577a86fda058e65353595259'
+                });
+            }}>unfollow org</Button>
+            <Button onClick={async () => {
+                await ajax.post("/api/account/unfollow", {
+                    user_id : '577a86eea058e65353595258'
+                });
+            }}>unfollow user</Button>
+             | |
+            <Button onClick={async () => {
+                await ajax.get("/api/account/timeline", {
+                });
+            }}>get timeline</Button>
+            <hr/>
             <Button onClick={async () => {
                 await ajax.get("/api/activity/search", {
                     q : 'h'

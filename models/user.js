@@ -71,10 +71,12 @@ userSchema.methods.join = function (activity){
         activity : activity._id,
         time : time
     })
+    this.markModified('activities');
     activity.participator.push({
         user : this._id,
         time : time
     })
+    activity.markModified('participator');
 }
 
 userSchema.methods.unjoin = function (activity){
@@ -95,13 +97,14 @@ userSchema.methods.unjoin = function (activity){
 
 userSchema.methods.followed = function (user_id) {
     return _.findIndex(this.followings, (item) => {
-        return item.user == user_id;
+        return String(item.user) == String(user_id);
     });
 }
 
 userSchema.methods.follow = function (target){
     let index = this.followed(target._id);
     if (index >= 0){
+        console.log('followed');
         return;
     }
     let time = Date.now();
@@ -109,16 +112,19 @@ userSchema.methods.follow = function (target){
         user : target._id,
         time : time
     })
+    this.markModified('followings');
 }
 
 userSchema.methods.unfollow = function (target){
     let index = this.followed(target._id);
     if (index < 0){
+        console.log('not followed before');
         return;
     }
     _.remove(this.followings, (item) => {
         return String(item.user) == String(target._id);
     });
+    this.markModified('followings');
 }
 
 const User = mongoose.model('User', userSchema)
