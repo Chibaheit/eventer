@@ -109,7 +109,7 @@ router.get('/activity/info/:id', async (req, res) => {
     let id = req.params.id;
     if (id){
         const activity = await Activity.findById(id)
-            .select('title content location startTime endTime participator')
+            .select('title content location startTime endTime creator participator')
             .populate('participator.user', 'nickname').exec()
         return res.success({ activity })
     } else {
