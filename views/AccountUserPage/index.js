@@ -35,7 +35,6 @@ const checkFollow = (follow, id) => {
 )
 class AccountActivityPage extends React.Component {
   handleClick = (followings, id) => {
-    console.log(this)
     if (checkFollow(followings, id)) {
       this.props.unfollow(id)
     } else {

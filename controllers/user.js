@@ -248,27 +248,27 @@ router.get('/account/timeline', async (req, res) => {
 });
 
 /** 用户follow */
-router.post('/account/follow', async (req, res) => {
-    if (!req.session.user._id || !req.body.user_id) {
+router.get('/account/follow/:user_id?', async (req, res) => {
+    if (!req.session.user._id || !req.params.user_id) {
       return res.status(403).fail();
     }
     const user = await User.findById(req.session.user._id);
-    const target = await User.findById(req.body.user_id);
+    const target = await User.findById(req.params.user_id);
     user.follow(target);
     await user.save();
-    return res.success();
+    return res.success({ user });
  });
 
  /** 用户follow */
- router.post('/account/unfollow', async (req, res) => {
-     if (!req.session.user._id || !req.body.user_id) {
+ router.get('/account/unfollow/:user_id?', async (req, res) => {
+     if (!req.session.user._id || !req.params.user_id) {
        return res.status(403).fail();
      }
      const user = await User.findById(req.session.user._id);
-     const target = await User.findById(req.body.user_id);
+     const target = await User.findById(req.params.user_id);
      user.unfollow(target);
      await user.save();
-     return res.success();
+     return res.success({ user });
   });
 
 export default router

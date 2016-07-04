@@ -52,8 +52,8 @@ router.post('/activity/create', async (req, res) => {
  * @params
  *    id : String
  */
-router.post('/activity/remove', async (req, res) => {
-    if (!req.session.user._id || !req.body.id) {
+router.get('/activity/remove/', async (req, res) => {
+    if (!req.session.user._id || !req.params.id) {
         return res.status(403).fail();
     }
     const activity = await Activity.findById(req.body.id);
@@ -123,7 +123,7 @@ router.get('/activity/info/:id', async (req, res) => {
  * @params :
  *  :id : String
  */
-router.post('/activity/join/:id', async (req, res) => {
+router.post('/activity/join', async (req, res) => {
     let id = req.params.id;
     if (!id || !req.session.user._id || req.session.isOrganization){
         res.status(403).fail();
@@ -133,7 +133,7 @@ router.post('/activity/join/:id', async (req, res) => {
     user.join(activity);
     await user.save();
     await activity.save();
-    return res.success({ activity });
+    return res.success({ user, activity });
 });
 
 /***
@@ -142,7 +142,7 @@ router.post('/activity/join/:id', async (req, res) => {
  * @params :
  *  :id : String
  */
-router.post('/activity/unjoin/:id', async (req, res) => {
+router.get('/activity/unjoin/:id?', async (req, res) => {
     let id = req.params.id;
     if (!id || !req.session.user._id || req.session.isOrganization){
         res.status(403).fail();
@@ -152,7 +152,7 @@ router.post('/activity/unjoin/:id', async (req, res) => {
     user.unjoin(activity)
     await user.save();
     await activity.save();
-    return res.success({ activity })
+    return res.success({ user, activity })
 });
 
 /***
@@ -169,7 +169,7 @@ router.get('/activity/search', async (req, res) => {
         return res.bad();
     }
     const activities = await Activity.find({ title: new RegExp(req.query.q, 'i') })
-        .select('_id title content location startTime endTime').exec();
+        .select('_id title content location startTime endTime creator').exec();
     return res.success({ activities });
 })
 

@@ -96,14 +96,14 @@ export const toggleModifyPassword = () => ({
   type: TOGGLE_MODIFY_PASSWORD
 })
 
-export const follow = data => ({
+export const follow = user_id => ({
   types: [FOLLOW, FOLLOW_SUCCESS, FOLLOW_FAIL],
-  promise: client => client.post('/api/account/follow', { user_id: data})
+  promise: client => client.get(`/api/account/follow/${user_id}`)
 })
 
-export const unfollow = data => ({
+export const unfollow = user_id => ({
   types: [UNFOLLOW, UNFOLLOW_SUCCESS, UNFOLLOW_FAIL],
-  promise: client => client.post('/api/account/unfollow', { user_id: data})
+  promise: client => client.get(`/api/account/unfollow/${user_id}`)
 })
 
 export const fetchTimeline = data => ({
@@ -183,7 +183,8 @@ export default function reducer(state = initialState, action = {}) {
     case FOLLOW_SUCCESS:
     case UNFOLLOW_SUCCESS:
       return {
-        ...state
+        ...state,
+        user: action.result.user
       }
     default:
       return state
