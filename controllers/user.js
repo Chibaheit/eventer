@@ -211,7 +211,7 @@ router.get('/account/search', async (req, res) => {
 /***
 * User timeline
 * @method GET
-* return [{ username. isOrganization, activity.name, username.activity.time}]
+* return [{ username. isOrganization, activity.name, activity.id, username.activity.time}]
 */
 router.get('/account/timeline', async (req, res) => {
 })

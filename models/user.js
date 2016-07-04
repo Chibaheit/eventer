@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import _ from 'lodash'
 
 const userSchema = new Schema({
   username: {
@@ -52,6 +53,39 @@ const userSchema = new Schema({
     default: Date.now()
   }
 })
+
+userSchema.methods.joined = (activity_id) => {
+    return _.findIndex(this.activity, (item) => {
+        return item._id == activity_id;
+    });
+}
+
+userSchema.methods.join = (activity) => {
+    if (this.joined(activity._id)){
+        return;
+    }
+    let time = Date.now();
+    this.activities.push({
+        activity : activity._id,
+        time : time
+    })
+    activities.participator.push({
+        user : this._id,
+        time : time
+    })
+}
+
+userSchema.methods.unjoin = (activity) => {
+    if (!this.joined(activity._id)){
+        return;
+    }
+    _.remove(activity.participator, (item) => {
+        return item._id == this._id;
+    });
+    _.remove(this.activity, (item) => {
+        return item._id == activity._id;
+    })
+}
 
 const User = mongoose.model('User', userSchema)
 
