@@ -19,6 +19,9 @@ import AccountSecurityPage from './AccountSecurityPage'
 import AccountAddPage from './AccountAddPage'
 import AccountActivityPage from './AccountActivityPage'
 import AccountManagePage from './AccountManagePage'
+import AccountSearchPage from './AccountSearchPage'
+import AccountActivitySearchPage from './AccountActivitySearchPage'
+import AccountUserPage from './AccountUserPage'
 import TestPage from './TestPage'
 import NotFoundPage from './NotFoundPage'
 
@@ -34,10 +37,13 @@ const router = (
         <Route path="/account" component={AccountPage} >
           <IndexRoute component={AccountTimelinePage} />
           <Route path="/account/activity/:activityId" component={AccountActivityPage} />
+          <Route path="/account/user/:userId" component={AccountUserPage} />
           <Route path="/account/manage" component={AccountManagePage} />
           <Route path="/account/info" component={AccountInfoPage} />
           <Route path="/account/security" component={AccountSecurityPage} />
           <Route path="/account/create" component={AccountAddPage} />
+          <Route path="/account/search" component={AccountSearchPage} />
+          <Route path="/account/activitySearch" component={AccountActivitySearchPage} />
         </Route>
       </Route>
       <Route path="*" component={NotFoundPage} />

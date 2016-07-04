@@ -43,6 +43,14 @@ const FETCH_TIMELINE = 'Eventer/account/FETCH_TIMELINE'
 const FETCH_TIMELINE_SUCCESS = 'Eventer/account/FETCH_TIMELINE_SUCCESS'
 const FETCH_TIMELINE_FAIL = 'Eventer/account/FETCH_TIMELINE_FAIL'
 
+const SEARCH = 'Eventer/account/SEARCH'
+const SEARCH_SUCCESS = 'Eventer/account/SEARCH_SUCCESS'
+const SEARCH_FAIL = 'Eventer/account/SEARCH_FAIL'
+
+const LOAD_USER = 'Eventer/account/LOAD_USER'
+const LOAD_USER_SUCCESS = 'Eventer/account/LOAD_USER_SUCCESS'
+const LOAD_USER_FAIL = 'Eventer/account/LOAD_USER_FAIL'
+
 const initialState = {
   user: null,
   follow: [],
@@ -90,17 +98,27 @@ export const toggleModifyPassword = () => ({
 
 export const follow = data => ({
   types: [FOLLOW, FOLLOW_SUCCESS, FOLLOW_FAIL],
-  promise: client => client.post(`/api/account/follow/${data}`)
+  promise: client => client.post('/api/account/follow', { user_id: data})
 })
 
 export const unfollow = data => ({
   types: [UNFOLLOW, UNFOLLOW_SUCCESS, UNFOLLOW_FAIL],
-  promise: client => client.post(`/api/account/unfollow/${data}`)
+  promise: client => client.post('/api/account/unfollow', { user_id: data})
 })
 
 export const fetchTimeline = data => ({
   types: [FETCH_TIMELINE, FETCH_TIMELINE_SUCCESS, FETCH_TIMELINE_FAIL],
   promise: client => client.get('/api/account/timeline')
+})
+
+export const searchAccount = q => ({
+  types: [SEARCH, SEARCH_SUCCESS, SEARCH_FAIL],
+  promise: client => client.get('/api/account/search', q)
+})
+
+export const loadUser = id => ({
+  types: [LOAD_USER, LOAD_USER_SUCCESS, LOAD_USER_FAIL],
+  promise: client => client.get(`/api/account/info/${id}`)
 })
 
 export default function reducer(state = initialState, action = {}) {
@@ -132,6 +150,11 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         user: action.result.user
       }
+    case LOAD_USER_SUCCESS:
+      return {
+        ...state,
+        other: action.result.user
+      }
     case CHANGE_PASSWORD_SUCCESS:
       return {
         ...state,
@@ -151,6 +174,16 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         timeline: action.result.timeline
+      }
+    case SEARCH_SUCCESS:
+      return {
+        ...state,
+        users: action.result.users
+      }
+    case FOLLOW_SUCCESS:
+    case UNFOLLOW_SUCCESS:
+      return {
+        ...state
       }
     default:
       return state

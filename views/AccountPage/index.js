@@ -17,7 +17,7 @@ class AccountPage extends React.Component {
           <div className={styles.left}>
             <AccountMenu />
           </div>
-          <div className={styles.right}>
+          <div className={styles.right} id="account-right">
             { this.props.children }
           </div>
         </Container>

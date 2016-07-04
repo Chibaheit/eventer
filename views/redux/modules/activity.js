@@ -60,9 +60,9 @@ export const updateActivity = data => ({
   promise: client => client.post('/api/activity/update', data)
 })
 
-export const searchActivity = data => ({
+export const searchActivity = q => ({
   types: [SEARCH, SEARCH_SUCCESS, SEARCH_FAIL],
-  promise: client => client.get('/api/activity/search', data)
+  promise: client => client.get('/api/activity/search', q)
 })
 
 export const loadActivity = id => ({
