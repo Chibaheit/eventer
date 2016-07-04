@@ -30,8 +30,8 @@ router.post('/activity/create', async (req, res) => {
         title: req.body.title || '',
         content: req.body.content || '',
         location: req.body.location || '',
-        startTime: new Date(req.body.startTime),
-        endTime: new Date(req.body.endTime),
+        startTime: new Date(req.body.date[0]),
+        endTime: new Date(req.body.date[1]),
         creator: req.session.user._id,
         participator: [],
     })

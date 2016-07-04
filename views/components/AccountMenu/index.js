@@ -11,7 +11,7 @@ const menus = [
   { to: '/account', text: '时间轴', icon: 'home'},
   { to: '/account/info', text: '基本信息', icon: 'info-circle-o' },
   { to: '/account/security', text: '安全设置', icon: 'unlock' },
-  { to: '/account/manage_activity', text: '我的活动', icon: 'exception'}
+  { to: '/account/manage', text: '我的活动', icon: 'exception'}
 ];
 
 @connect(
@@ -22,8 +22,8 @@ const menus = [
 class AccountMenu extends React.Component {
   render() {
     const { user } = this.props
-    if (user.isOrganization) {
-      menus.push({ to: '/account/add_activity'})
+    if (user && user.isOrganization && menus.length == 4) {
+      menus.push({ to: '/account/create', text: '添加活动', icon: 'plus-square'})
     }
     return (
       <Menu onClick={this.handleClick}
