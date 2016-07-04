@@ -1,0 +1,21 @@
+.wrapper {
+}
+
+.container {
+  padding: 10px 20px;
+  .row {
+    justify-content: center;
+    padding: 30px 0;
+    border-top: solid #aaa 1px;
+  }
+  .row:nth-child(1) {
+    border-top: none;
+  }
+}
+
+.pagination {
+  margin-bottom: 10px;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}

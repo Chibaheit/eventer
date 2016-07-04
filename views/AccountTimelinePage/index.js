@@ -5,7 +5,7 @@ import React from 'react'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 import { Button } from 'antd'
-import AccountRecordTable from '../components/AccountRecordTable'
+import AccountTimeline from '../components/AccountTimeline'
 import FormModal from '../components/FormModal'
 import styles from './styles'
 import ajax from '../base/ajax'
@@ -23,7 +23,7 @@ class AccountTimelinePage extends React.Component {
       return <span />
     }
     return (
-      <div>Test</div>
+      <AccountTimeline />
     )
   }
 }
