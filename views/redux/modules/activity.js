@@ -32,12 +32,12 @@ const initialState = {
 
 export const join = data => ({
   types: [JOIN, JOIN_SUCCESS, JOIN_FAIL],
-  promise: client => client.post('/api/activity/join', data)
+  promise: client => client.post(`/api/activity/join/${data}`)
 })
 
 export const unjoin = data => ({
   types: [UNJOIN, UNJOIN_SUCCESS, UNJOIN_FAIL],
-  promise: client => client.post('/api/activity/unjoin', data)
+  promise: client => client.post(`/api/activity/unjoin/${data}`)
 })
 
 export const createActivity = data => ({

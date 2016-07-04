@@ -90,12 +90,12 @@ export const toggleModifyPassword = () => ({
 
 export const follow = data => ({
   types: [FOLLOW, FOLLOW_SUCCESS, FOLLOW_FAIL],
-  promise: client => client.post('/api/account/follow')
+  promise: client => client.post(`/api/account/follow/${data}`)
 })
 
 export const unfollow = data => ({
   types: [UNFOLLOW, UNFOLLOW_SUCCESS, UNFOLLOW_FAIL],
-  promise: client => client.post('/api/account/unfollow')
+  promise: client => client.post(`/api/account/unfollow/${data}`)
 })
 
 export const fetchTimeline = data => ({
