@@ -171,7 +171,11 @@ router.post('/account/update_info', async (req, res) => {
   });
   for (let key in req.body) {
     if (_.includes(attrs, key)) {
-      user[key] = req.body[key];
+      let value = req.body[key];
+      if (key == 'avatar'){
+          value = value.response.data.attachmentId;
+      }
+      user[key] = value;
     }
   }
   await user.save();

@@ -2,7 +2,8 @@
 'use strict';
 
 /** 附件表 */
-//const fs = Promise.promisifyAll(require('fs'));
+
+import mongoose, { Schema } from 'mongoose'
 
 import multer from 'multer'
 const upload = multer({ dest: '/tmp' })
@@ -40,7 +41,16 @@ router.post('/photo/new', upload.single('photo'),
 
 /** 获取图片 */
 router.get('/photo/show', async (req, res) => {
-    const attachment = await Attachment.findById(req.query.id).select('blob');
+    let bid = req.query.id;
+    try{
+        bid = Schema.Types.ObjectId.valueof(bid);
+    }catch(err){
+        bid = null;
+    }
+    if (!bid){
+        return res.status(404).end();
+    }
+    const attachment = await Attachment.findById(bid).select('blob');
     if (!attachment) {
         return res.status(404).end();
     }
