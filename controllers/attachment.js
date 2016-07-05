@@ -43,7 +43,7 @@ router.post('/photo/new', upload.single('photo'),
 router.get('/photo/show', async (req, res) => {
     let bid = req.query.id;
     try{
-        bid = Schema.Types.ObjectId.valueof(bid);
+        bid = new mongoose.Types.ObjectId(bid);
     }catch(err){
         bid = null;
     }
