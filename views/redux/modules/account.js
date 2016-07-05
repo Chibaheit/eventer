@@ -1,5 +1,6 @@
 import store from '../store'
 import { push } from 'react-router-redux'
+import { message } from 'antd'
 
 const REGISTER = 'Eventer/account/REGISTER'
 const REGISTER_SUCCESS = 'Eventer/account/REGISTER_SUCCESS'
@@ -53,9 +54,72 @@ const LOAD_USER_FAIL = 'Eventer/account/LOAD_USER_FAIL'
 
 const initialState = {
   user: null,
-  follow: [],
+  activity: null,
   timeline: null
 }
+
+const JOIN = 'Eventer/activity/JOIN'
+const JOIN_SUCCESS = 'Eventer/activity/JOIN_SUCCESS'
+const JOIN_FAIL = 'Eventer/activity/JOIN_FAIL'
+
+const UNJOIN = 'Eventer/activity/UNJOIN'
+const UNJOIN_SUCCESS = 'Eventer/activity/UNJOIN_SUCCESS'
+const UNJOIN_FAIL = 'Eventer/activity/UNJOIN_FAIL'
+
+const CREATE = 'Eventer/activity/CREATE'
+const CREATE_SUCCESS = 'Eventer/activity/CREATE_SUCCESS'
+const CREATE_FAIL = 'Eventer/activity/CREATE_FAIL'
+
+const REMOVE = 'Eventer/activity/REMOVE'
+const REMOVE_SUCCESS = 'Eventer/activity/REMOVE_SUCCESS'
+const REMOVE_FAIL = 'Eventer/activity/REMOVE_FAIL'
+
+const UPDATE = 'Eventer/activity/UPDATE'
+const UPDATE_SUCCESS = 'Eventer/activity/UPDATE_SUCCESS'
+const UPDATE_FAIL = 'Eventer/activity/UPDATE_FAIL'
+
+const SEARCH_ACTIVITY = 'Eventer/activity/SEARCH_ACTIVITY'
+const SEARCH_ACTIVITY_SUCCESS = 'Eventer/activity/SEARCH_ACTIVITY_SUCCESS'
+const SEARCH_ACTIVITY_FAIL = 'Eventer/activity/SEARCH_ACTIVITY_FAIL'
+
+const LOAD_ACITIVITY = 'Eventer/activity/LOAD_ACITIVITY'
+const LOAD_ACITIVITY_SUCCESS = 'Eventer/activity/LOAD_ACITIVITY_SUCCESS'
+const LOAD_ACITIVITY_FAIL = 'Eventer/activity/LOAD_ACITIVITY_FAIL'
+
+export const join = id => ({
+  types: [JOIN, JOIN_SUCCESS, JOIN_FAIL],
+  promise: client => client.get(`/api/activity/join/${id}`)
+})
+
+export const unjoin = id => ({
+  types: [UNJOIN, UNJOIN_SUCCESS, UNJOIN_FAIL],
+  promise: client => client.get(`/api/activity/unjoin/${id}`)
+})
+
+export const createActivity = data => ({
+  types: [CREATE, CREATE_SUCCESS, CREATE_FAIL],
+  promise: client => client.post('/api/activity/create', data)
+})
+
+export const removeActivity = id => ({
+  types: [REMOVE, REMOVE_SUCCESS, REMOVE_FAIL],
+  promise: client => client.get(`/api/activity/remove/${id}`)
+})
+
+export const updateActivity = data => ({
+  types: [UPDATE, UPDATE_SUCCESS, UPDATE_FAIL],
+  promise: client => client.post('/api/activity/update', data)
+})
+
+export const searchActivity = q => ({
+  types: [SEARCH_ACTIVITY, SEARCH_ACTIVITY_SUCCESS, SEARCH_ACTIVITY_FAIL],
+  promise: client => client.get('/api/activity/search', q)
+})
+
+export const loadActivity = id => ({
+  types: [LOAD_ACITIVITY, LOAD_ACITIVITY_SUCCESS, LOAD_ACITIVITY_FAIL],
+  promise: client => client.get(`/api/activity/info/${id}`)
+})
 
 export const registerOrganization = data => ({
   types: [REGISTER_ORGANIZATION, REGISTER_ORGANIZATION_SUCCESS, REGISTER_ORGANIZATION_FAIL],
@@ -185,6 +249,38 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         user: action.result.user
+      }
+    case CREATE_SUCCESS:
+      message.success('创建活动成功')
+      setTimeout(() => {
+        store.dispatch(push(`/account/activity/${action.result.activity._id}`))
+      })
+      return {
+        ...state,
+        total: [...state.total, action.result.activity]
+      }
+    case JOIN_SUCCESS:
+      return {
+        ...state,
+        total: [...state.total, action.result.activity]
+      }
+    case REMOVE_SUCCESS:
+      return {
+        ...state,
+        user: action.result.user,
+        activity: action.result.activity
+      }
+    case UNJOIN_SUCCESS:
+    case UPDATE_SUCCESS:
+    case SEARCH_ACTIVITY_SUCCESS:
+      return {
+        ...state,
+        activities: action.result.activities
+      }
+    case LOAD_ACITIVITY_SUCCESS:
+      return {
+        ...state,
+        activity: action.result.activity
       }
     default:
       return state

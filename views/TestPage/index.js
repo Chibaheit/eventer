@@ -8,7 +8,7 @@ import MixedForm from '../components/MixedForm'
 import { Button } from 'antd'
 
 import { follow, unfollow, fetchTimeline } from '../redux/modules/account'
-import { join, unjoin, createActivity, removeActivity, updateActivity } from '../redux/modules/activity'
+import { join, unjoin, createActivity, removeActivity, updateActivity } from '../redux/modules/account'
 
 @connect(
   state => ({

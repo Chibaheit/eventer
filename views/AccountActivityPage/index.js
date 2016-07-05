@@ -5,10 +5,20 @@ import { Form, Input, Row, Col, Button, InputNumber,
           Upload, Icon, Modal, DatePicker, Alert, message } from 'antd'
 import Container from '../components/Container'
 import AccountActivityHeader from '../components/AccountActivityHeader'
-import { loadActivity } from '../redux/modules/activity'
+import { loadActivity, removeActivity, join, unjoin } from '../redux/modules/account'
 
 
 import styles from './styles';
+
+
+const checkJoin = (activities, id) => {
+  for (let i of activities) {
+    if (i.activity == id) {
+      return true
+    }
+  }
+  return false
+}
 
 @asyncConnect([{
   promise: ({ store: { dispatch, getState }, params }) => {
@@ -16,10 +26,26 @@ import styles from './styles';
   }}],
   state => ({
     user: state.account.user,
-    activity: state.activity.currentActivity
+    activity: state.account.activity
+  }),
+  dispatch => ({
+    removeActivity: id => dispatch(removeActivity(id)),
+    join: id => dispatch(join(id)),
+    unjoin: id => dispatch(unjoin(id))
   })
 )
 class AccountActivityPage extends React.Component {
+  handleClick = (isOrganization, activities, id) => {
+    if (isOrganization) {
+      this.props.removeActivity(id)
+    } else {
+      if (checkJoin(activities, id)) {
+        this.props.unjoin(id)
+      } else {
+        this.props.join(id)
+      }
+    }
+  }
   render() {
     const { user, activity } = this.props
     return (
@@ -75,6 +101,27 @@ class AccountActivityPage extends React.Component {
                   { (new Date(activity.endTime)).toString() }
                 </Col>
               </Row>
+              {
+                user.isOrganization &&
+                <div className={styles.buttonContainer}>
+                  <Button size="large" type="primary"
+                          onClick={this.handleClick.bind(this, user.isOrganization, user.activities, activity._id)}
+                          disabled={!(user && user.isOrganization && user._id == activity.creator)}>
+                    <Icon type='delete' />取消
+                  </Button>
+                </div>
+              }
+              {
+                !user.isOrganization &&
+                <div className={styles.buttonContainer}>
+                  <Button size="large" type="primary"
+                          onClick={this.handleClick.bind(this, user.isOrganization, user.activities, activity._id)}>
+                    <Icon type={checkJoin(user.activities, activity._id) ? 'plus-circle-o' : 'plus-circle'} /> {
+                      checkJoin(user.activities, activity._id) ? '不参加' : '参加'
+                    }
+                  </Button>
+                </div>
+              }
             </div>
           </div>
         </div>

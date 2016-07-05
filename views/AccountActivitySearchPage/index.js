@@ -8,7 +8,7 @@ import classNames from 'classnames';
 
 import store from '../redux/store'
 import AccountActivityHeader from '../components/AccountActivityHeader'
-import { searchActivity } from '../redux/modules/activity'
+import { searchActivity } from '../redux/modules/account'
 
 import show from './show.jpg'
 import styles from './styles'
@@ -74,7 +74,7 @@ const SearchInput = React.createClass({
 });
 @connect(
   state => ({
-    contents: state.activity.activities
+    contents: state.account.activities
   }),
   dispatch => ({
     searchActivity: q => dispatch(searchActivity(q))

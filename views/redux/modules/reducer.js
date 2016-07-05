@@ -3,12 +3,10 @@ import { routerReducer as routing } from 'react-router-redux'
 import { reducer as reduxAsyncConnect } from 'redux-connect'
 import { reducer as form } from 'redux-form'
 import account from './account'
-import activity from './activity'
 
 export default combineReducers({
   routing,
   form,
   reduxAsyncConnect,
-  account,
-  activity
+  account
 });

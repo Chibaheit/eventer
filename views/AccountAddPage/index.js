@@ -6,7 +6,7 @@ import { Form, Input, Row, Col, Button, InputNumber,
 import Container from '../components/Container'
 import AccountActivityHeader from '../components/AccountActivityHeader'
 
-import { createActivity } from '../redux/modules/activity'
+import { createActivity } from '../redux/modules/account'
 const RangePicker = DatePicker.RangePicker
 
 import styles from './styles';

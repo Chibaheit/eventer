@@ -4,7 +4,7 @@ import is from 'is_js'
 
 import store from '../redux/store'
 import ajax from '../base/ajax'
-import { removeActivity, unjoin } from '../redux/modules/activity'
+import { removeActivity, unjoin } from '../redux/modules/account'
 
 import AccountActivityHeader from '../components/AccountActivityHeader'
 import styles from './styles'
