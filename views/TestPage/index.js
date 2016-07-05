@@ -101,6 +101,11 @@ class TestPage extends React.Component {
                     q : 'h'
                 });
             }}>search</Button>
+            <hr/>
+            <form action="/api/photo/new" enctype="multipart/form-data" method="POST">
+                <input type="file" name="file"/>
+                <input type="submit" value="Upload"/>
+            </form>
         </div>
     );
   }

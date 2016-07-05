@@ -123,7 +123,7 @@ router.get('/activity/info/:id', async (req, res) => {
  * @params :
  *  :id : String
  */
-router.post('/activity/join', async (req, res) => {
+router.get('/activity/join', async (req, res) => {
     let id = req.params.id;
     if (!id || !req.session.user._id || req.session.isOrganization){
         res.status(403).fail();

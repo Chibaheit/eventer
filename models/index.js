@@ -13,3 +13,4 @@ mongoose.connect(config.mongo.uri, config.mongo.options, (err) => {
 
 export User from './user'
 export Activity from './activity'
+export Attachment from './attachment'
