@@ -110,7 +110,7 @@ router.get('/account/info/:id?', async (req, res) => {
   }
   if (id){
     const user = await User.findById(id)
-        .select('email phone isOrganization signature username nickname activities followings')
+        .select('email phone isOrganization signature username nickname activities followings avatar')
         .populate('followings.user', 'nickname').exec()
     return res.success({ user })
   } else {

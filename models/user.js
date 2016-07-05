@@ -23,7 +23,7 @@ const userSchema = new Schema({
   avatar: {
       type: Schema.Types.ObjectId,
       ref: 'Attachment',
-      default : "577b231237b9413713f08447",
+      default : '577b312638bdbd573908b672',
   },
   email: {
     type: String,
