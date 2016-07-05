@@ -127,7 +127,7 @@ class AccountActivityPage extends React.Component {
         </div>
         <div className={styles.feedback}>
           <div className={styles.description}>
-            参与者：{activity.participator.join(', ')}
+            参与者：{activity.participator.map(e => e.user.nickname).reduce((a, b) => a + ' ' + b, '')}
           </div>
         </div>
       </div>

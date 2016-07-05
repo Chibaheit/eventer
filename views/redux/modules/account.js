@@ -260,9 +260,11 @@ export default function reducer(state = initialState, action = {}) {
         activity: action.result.activity
       }
     case JOIN_SUCCESS:
+    case UNJOIN_SUCCESS:
       return {
         ...state,
-        total: [...state.total, action.result.activity]
+        user: action.result.user,
+        activity: action.result.activity
       }
     case REMOVE_SUCCESS:
       message.success('删除活动成功')
@@ -274,7 +276,6 @@ export default function reducer(state = initialState, action = {}) {
         user: action.result.user,
         activity: action.result.activity
       }
-    case UNJOIN_SUCCESS:
     case UPDATE_SUCCESS:
     case SEARCH_ACTIVITY_SUCCESS:
       return {
