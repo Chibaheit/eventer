@@ -52,11 +52,11 @@ router.post('/activity/create', async (req, res) => {
  * @params
  *    id : String
  */
-router.get('/activity/remove/', async (req, res) => {
+router.get('/activity/remove/:id', async (req, res) => {
     if (!req.session.user._id || !req.params.id) {
         return res.status(403).fail();
     }
-    const activity = await Activity.findById(req.body.id);
+    const activity = await Activity.findById(req.params.id);
     // authentication Check
     if (!activity || String(activity.creator) != String(req.session.user._id)){
         return res.status(403).fail();
