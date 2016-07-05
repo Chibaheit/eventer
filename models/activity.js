@@ -30,7 +30,11 @@ const activitySchema = new Schema({
         time : {
             type: Date
         }
-    }]
+    }],
+    photo: {
+        type: Schema.Types.ObjectId,
+        ref: 'Attachment'
+    }
 })
 
 activitySchema.methods.unjoin_all = async function() {

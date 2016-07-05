@@ -257,7 +257,7 @@ export default function reducer(state = initialState, action = {}) {
       })
       return {
         ...state,
-        total: [...state.total, action.result.activity]
+        activity: action.result.activity
       }
     case JOIN_SUCCESS:
       return {

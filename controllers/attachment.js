@@ -13,7 +13,7 @@ const router = Router();
 
 import { Attachment } from '../models'
 
-import fs from 'fs'
+const fs = Promise.promisifyAll(require('fs'))
 
 /** 添加图片 */
 router.post('/photo/new', upload.single('photo'),

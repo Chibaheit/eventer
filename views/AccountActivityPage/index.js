@@ -56,7 +56,7 @@ class AccountActivityPage extends React.Component {
             <div className={styles.carousel}>
               <div>
                 <img className={styles.photo}
-                     src='https://pbs.twimg.com/media/Cmhr0yoUkAIKJEH.jpg:large' />
+                     src={`/api/photo/show?id=${activity.photo}`} />
                </div>
             </div>
             <div className={styles.info}>

@@ -34,6 +34,7 @@ router.post('/activity/create', async (req, res) => {
         endTime: new Date(req.body.date[1]),
         creator: req.session.user._id,
         participator: [],
+        photo: req.body.photo[0].response.data.attachmentId
     })
     const user = await User.findById(req.session.user._id);
     user.activities.push({
@@ -85,7 +86,7 @@ router.post('/activity/update_info/:id', async (req, res) => {
     if (!req.session.user._id || !req.params.id) {
         return res.status(403).fail();
     }
-    const attrs = ['title', 'content', 'location', 'startTime', 'endTime'];
+    const attrs = ['title', 'content', 'location', 'startTime', 'endTime', 'photo'];
     const activity = await Activity.findById(req.params.id)
                         .select(attrs.join(' ') + ' creator');
     // authentication Check
@@ -175,7 +176,7 @@ router.get('/activity/search', async (req, res) => {
         return res.bad();
     }
     const activities = await Activity.find({ title: new RegExp(req.query.q, 'i') })
-        .select('_id title content location startTime endTime creator').exec();
+        .select('_id title content location startTime endTime creator photo').exec();
     return res.success({ activities });
 })
 
