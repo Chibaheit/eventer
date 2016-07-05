@@ -40,9 +40,7 @@ router.post('/photo/new', upload.single('photo'),
 
 /** 获取图片 */
 router.get('/photo/show', async (req, res) => {
-    const attachment = await Attachment.findById(req.query.id, {
-        attributes: ['blob']
-    })
+    const attachment = await Attachment.findById(req.query.id).select('blob');
     if (!attachment) {
         return res.status(404).end();
     }

@@ -26,6 +26,7 @@ router.post('/activity/create', async (req, res) => {
         return res.status(403).fail();
     }
     // Create user
+    console.log(req.body.photo[0].response.data.attachmentId);
     const activity = new Activity({
         title: req.body.title || '',
         content: req.body.content || '',
@@ -110,7 +111,7 @@ router.get('/activity/info/:id', async (req, res) => {
     let id = req.params.id;
     if (id){
         let activity = await Activity.findById(id)
-            .select('title content location startTime endTime creator participator')
+            .select('title content location startTime endTime creator participator photo')
             .populate('participator.user', 'nickname').exec();
         if (!activity){
             return res.fail();
