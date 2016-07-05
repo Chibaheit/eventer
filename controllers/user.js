@@ -207,7 +207,7 @@ router.get('/account/search', async (req, res) => {
     return res.bad();
   }
   const users = await User.find({ username: new RegExp(req.query.q, 'i') })
-      .select('username nickname').exec();
+      .select('username nickname avatar').exec();
   return res.success({ users });
 })
 

@@ -123,7 +123,9 @@ class AccountSearchPage extends React.Component {
                   <Card className={styles.card}
                     >
                     {
-                      <img onClick={this.handleClick.bind(this, e._id) } src={show} />
+                      e.avatar
+                        ? <img onClick={this.handleClick.bind(this, e.id) } src={`/api/photo/show?id=${e.avatar}`} />
+                        : <img onClick={this.handleClick.bind(this, e.id) } src={show} />
                     }
                     <div className={styles.title}>
                       <span className={styles.nickname}>{ e.nickname }</span>
