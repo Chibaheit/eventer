@@ -12,7 +12,7 @@ import styles from './styles';
 
 const checkFollow = (follow, id) => {
   for (let i of follow) {
-    if (i.user._id == id) {
+    if (i.user == id || i.user._id == id) {
       return true
     }
   }
