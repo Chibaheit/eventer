@@ -84,8 +84,8 @@ class AccountSearchPage extends React.Component {
   state = {
     current: 1
   }
-  handleClick = (id) => {
-    store.dispatch(push(`/account/user/${id}`))
+  handleClick = (userId) => {
+    store.dispatch(push(`/account/user/${userId}`))
   }
   handlePagination = (current) => {
     this.setState({ current })
@@ -124,8 +124,8 @@ class AccountSearchPage extends React.Component {
                     >
                     {
                       e.avatar
-                        ? <img onClick={this.handleClick.bind(this, e.id) } src={`/api/photo/show?id=${e.avatar}`} />
-                        : <img onClick={this.handleClick.bind(this, e.id) } src={show} />
+                        ? <img onClick={this.handleClick.bind(this, e._id) } src={`/api/photo/show?id=${e.avatar}`} />
+                        : <img onClick={this.handleClick.bind(this, e._id) } src={show} />
                     }
                     <div className={styles.title}>
                       <span className={styles.nickname}>{ e.nickname }</span>

@@ -1,18 +1,29 @@
 import React from 'react'
 import _ from 'lodash'
-import { connect } from 'react-redux'
+import { asyncConnect } from 'redux-connect'
 import { Pagination } from 'antd'
 import TimelineRow from '../TimelineRow'
 import styles from './styles'
 import store from '../../redux/store'
+import fetchTimeline from '../../redux/modules/account'
+import ajax from '../../base/ajax'
 
+@asyncConnect([{
+  promise: ({ store: { dispatch, getState } }) => {
+    return dispatch(fetchTimeline())
+  }}],
+  state => ({
+    user: state.account.user,
+    timeline: state.account.timeline
+  })
+)
 class AccountTimeline extends React.Component {
   state = { current: 1 }
   handlePagination = current => {
     this.setState({ current })
   }
   render() {
-    const { user } = this.props
+    const { user, timeline } = this.props
     const { current } = this.state
     const contents = [{
       username: 'Chiba',
@@ -33,7 +44,7 @@ class AccountTimeline extends React.Component {
       <div className={styles.wrapper}>
         <div className={styles.container}>
           {
-            contents.slice(5 * (current - 1), 5 * current).map((e, i) => (
+            timeline.slice(5 * (current - 1), 5 * current).map((e, i) => (
               <TimelineRow className={styles.row} key={i} content={e} />
             ))
           }

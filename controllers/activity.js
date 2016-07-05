@@ -136,11 +136,12 @@ router.get('/activity/join/:id', async (req, res) => {
     if (!id || !req.session.user._id || req.session.isOrganization){
         res.status(403).fail();
     }
-    const activity = await Activity.findById(req.params.id);
+    const activity1 = await Activity.findById(req.params.id);
     const user = await User.findById(req.session.user._id);
-    user.join(activity);
+    user.join(activity1);
     await user.save();
-    await activity.save();
+    await activity1.save();
+    const activity = await Activity.findById(req.params.id).populate('participator.user', 'nickname');
     return res.success({ user, activity });
 });
 

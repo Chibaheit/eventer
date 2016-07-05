@@ -170,7 +170,7 @@ export const unfollow = user_id => ({
   promise: client => client.get(`/api/account/unfollow/${user_id}`)
 })
 
-export const fetchTimeline = data => ({
+export const fetchTimeline = () => ({
   types: [FETCH_TIMELINE, FETCH_TIMELINE_SUCCESS, FETCH_TIMELINE_FAIL],
   promise: client => client.get('/api/account/timeline')
 })

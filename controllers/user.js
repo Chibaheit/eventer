@@ -241,6 +241,8 @@ router.get('/account/timeline', async (req, res) => {
                 isOrganization : follow.isOrganization,
                 title : item.activity.title,
                 time : item.time,
+                userId: follow._id,
+                activityId: item.activity._id
             };
             timeline.push(tlitem);
         })
