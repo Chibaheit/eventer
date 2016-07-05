@@ -71,7 +71,7 @@ router.get('/activity/remove/:id', async (req, res) => {
     await user.save();
     await activity.unjoin_all();
     await activity.remove();
-    return res.success();
+    return res.success({ user, activity });
 })
 
 /***

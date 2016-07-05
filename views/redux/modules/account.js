@@ -265,6 +265,10 @@ export default function reducer(state = initialState, action = {}) {
         total: [...state.total, action.result.activity]
       }
     case REMOVE_SUCCESS:
+      message.success('删除活动成功')
+      setTimeout(() => {
+        store.dispatch(push('/account'))
+      })
       return {
         ...state,
         user: action.result.user,

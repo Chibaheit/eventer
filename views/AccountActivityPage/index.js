@@ -66,7 +66,7 @@ class AccountActivityPage extends React.Component {
                   组织者
                 </Col>
                 <Col span="12">
-                  { activity.creator }
+                  { activity.creator.nickname }
                 </Col>
               </Row>
               <Row className={styles.user}>
@@ -106,7 +106,7 @@ class AccountActivityPage extends React.Component {
                 <div className={styles.buttonContainer}>
                   <Button size="large" type="primary"
                           onClick={this.handleClick.bind(this, user.isOrganization, user.activities, activity._id)}
-                          disabled={!(user && user.isOrganization && user._id == activity.creator)}>
+                          disabled={!(user && user.isOrganization && user._id == activity.creator._id)}>
                     <Icon type='delete' />取消
                   </Button>
                 </div>
