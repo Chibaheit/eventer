@@ -108,12 +108,15 @@ router.post('/activity/update_info/:id', async (req, res) => {
 router.get('/activity/info/:id', async (req, res) => {
     let id = req.params.id;
     if (id){
-        const activity = await Activity.findById(id)
+        let activity = await Activity.findById(id)
             .select('title content location startTime endTime creator participator')
-            .populate('participator.user', 'nickname').exec()
+            .populate('participator.user', 'nickname').exec();
         if (!activity){
             return res.fail();
         }
+        let creator = await User.findById(activity.creator)
+                            .select('nickname');
+        activity.creator = creator;
         return res.success({ activity })
     } else {
         return res.fail();
